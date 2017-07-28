@@ -192,7 +192,7 @@ Ces extraits n'ont pas de validités juridiques pour le moment et l'objectif est
           </thead>
           <tbody>
             <tr ng-repeat="item in extract_list">
-              <th scope="row">{{ $index }}</th>
+              <th scope="row">{{ $index + 1 }}</th>
               <td>{{ item.filename }}</td>
               <td>{{ item.hash | limitTo:numLimit }}…&nbsp;<a href="/api/recu?hash={{ item.hash }}">
                   <button type="button" class="btn btn-primary btn-sm">Reçu</button>
