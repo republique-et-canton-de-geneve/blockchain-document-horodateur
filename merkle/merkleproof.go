@@ -1,7 +1,6 @@
-package internal
+package merkle
 
 import (
-	"github.com/Magicking/rc-ge-ch-pdf/internal/merkle"
 	"github.com/ethereum/go-ethereum/common"
 	"golang.org/x/crypto/sha3"
 )
@@ -23,16 +22,16 @@ type AnchorPoint struct {
 }
 
 type Chainpoint struct {
-	Context    string                        `json:"@context"`
-	Anchors    []AnchorPoint                 `json:"anchors"`
-	MerkleRoot string                        `json:"merkleRoot"`
-	Proof      []merkle.ChainpointLeafString `json:"proof"`
-	TargetHash string                        `json:"targetHash"`
-	Type       string                        `json:"type"`
+	Context    string                 `json:"@context"`
+	Anchors    []AnchorPoint          `json:"anchors"`
+	MerkleRoot string                 `json:"merkleRoot"`
+	Proof      []ChainpointLeafString `json:"proof"`
+	TargetHash string                 `json:"targetHash"`
+	Type       string                 `json:"type"`
 }
 
-func NewChainpoints(items []merkle.Hashable) ([]Chainpoint, []byte) {
-	rootH, proofs := merkle.ChainpointProofsFromHashables(items)
+func NewChainpoints(items []Hashable) ([]Chainpoint, []byte) {
+	rootH, proofs := ChainpointProofsFromHashables(items)
 	if len(proofs) != len(items) {
 		panic("Not all items were entered into merkle tree")
 	}
@@ -49,8 +48,8 @@ func NewChainpoints(items []merkle.Hashable) ([]Chainpoint, []byte) {
 
 func (cp *Chainpoint) MerkleVerify() bool {
 	targetHash := common.Hex2Bytes(cp.TargetHash)
-	hash := merkle.SimpleHashFromTwoHashes(targetHash, nil)
-	aunts := merkle.ChainpointProofFromStringAunt(cp.Proof)
+	hash := SimpleHashFromTwoHashes(targetHash, nil)
+	aunts := ChainpointProofFromStringAunt(cp.Proof)
 	root := common.Hex2Bytes(cp.MerkleRoot)
-	return merkle.Verify(hash, aunts, root)
+	return Verify(hash, aunts, root)
 }

@@ -1,10 +1,9 @@
-package internal
+package merkle
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/Magicking/rc-ge-ch-pdf/internal/merkle"
 	"github.com/ethereum/go-ethereum/common"
 	"golang.org/x/crypto/sha3"
 )
@@ -41,11 +40,11 @@ func testmerkle() {
 	H1 := common.Hex2Bytes("cb0dbbedb5ec5363e39be9fc43f56f321e1572cfcf304d26fc67cb6ea2e49faf")
 	H2 := common.Hex2Bytes("da0ed1fecac504ea4f76d241a45032fa97b9eb692614419a04c9a9c32e39df2d")
 
-	cpProofs := NewChainpoints([]merkle.Hashable{hashitem(H0), hashitem(H1), hashitem(H2)})
-	rootH, proofs := merkle.ChainpointProofsFromHashables([]merkle.Hashable{hashitem(H0), hashitem(H1), hashitem(H2)})
-	hash := merkle.SimpleHashFromTwoHashes(H0, nil)
+	cpProofs := NewChainpoints([]Hashable{hashitem(H0), hashitem(H1), hashitem(H2)})
+	rootH, proofs := ChainpointProofsFromHashables([]Hashable{hashitem(H0), hashitem(H1), hashitem(H2)})
+	hash := SimpleHashFromTwoHashes(H0, nil)
 
-	ok := merkle.Verify(hash, *proofs[0], rootH)
+	ok := Verify(hash, *proofs[0], rootH)
 	if ok {
 		fmt.Println("Okey !")
 	} else {
@@ -70,7 +69,7 @@ func testmerkle() {
 	fmt.Println("----8<-------8<-------8<---")
 	manual_verif()
 
-	res := NewChainpoints([]merkle.Hashable{hashitem(H0), hashitem(H1), hashitem(H2)})
+	res := NewChainpoints([]Hashable{hashitem(H0), hashitem(H1), hashitem(H2)})
 	proofjson, err = json.Marshal(res)
 	if err != nil {
 		fmt.Println("error", err)

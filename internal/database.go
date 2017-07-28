@@ -8,6 +8,7 @@ import (
 	"github.com/jinzhu/gorm"
 	//	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"context"
+	"github.com/Magicking/rc-ge-ch-pdf/merkle"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
@@ -19,7 +20,7 @@ type Receipt struct {
 	JSONData        []byte
 }
 
-func InsertReceipt(ctx context.Context, filename string, rcpt *Chainpoint) error {
+func InsertReceipt(ctx context.Context, filename string, rcpt *merkle.Chainpoint) error {
 	jsonData, err := json.Marshal(rcpt)
 	if err != nil {
 		return err

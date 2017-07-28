@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	ethtk "github.com/Magicking/gethitihteg/ethereum"
-	"github.com/Magicking/rc-ge-ch-pdf/internal/merkle"
+	"github.com/Magicking/rc-ge-ch-pdf/merkle"
 	"golang.org/x/crypto/sha3"
 	"io"
 	"log"
@@ -69,7 +69,7 @@ func UploadHandler(ctx context.Context, prefix string, handler http.Handler) htt
 			}
 			//associate filename with hash
 			hash := h.Sum(nil)
-			hashs[i] = Hashitem(hash[:])
+			hashs[i] = merkle.Hashitem(hash[:])
 			/* //copy the uploaded file to the destination file
 			if _, err := io.Copy(dst, file); err != nil {
 			}*/
@@ -77,7 +77,7 @@ func UploadHandler(ctx context.Context, prefix string, handler http.Handler) htt
 		if len(files) == 1 {
 			hashs = append(hashs, hashs[0])
 		}
-		receipts, merkleRoot := NewChainpoints(hashs)
+		receipts, merkleRoot := merkle.NewChainpoints(hashs)
 		//send merkleroot
 		txhash, err := sendData(ctx, merkleRoot)
 		if err != nil {
@@ -89,7 +89,7 @@ func UploadHandler(ctx context.Context, prefix string, handler http.Handler) htt
 				break
 			}
 			//fill receipt
-			v.Anchors = []AnchorPoint{AnchorPoint{SourceID: txhash, Type: "ETHData"}}
+			v.Anchors = []merkle.AnchorPoint{merkle.AnchorPoint{SourceID: txhash, Type: "ETHData"}}
 			InsertReceipt(ctx, files[i].Filename, &v)
 		}
 		fmt.Println(merkleRoot)
