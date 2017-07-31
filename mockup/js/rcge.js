@@ -1,20 +1,38 @@
 var endpoint = '/api';
 
-angular.module('rc',[])
-.controller('extract', function($scope, $http) {
+angular.module('rc', ['ngAnimate', 'ngSanitize', 'ui.bootstrap'])
+.controller('extract', ['$scope', '$http', function($scope, $http) {
   $scope.numLimit = 16;
-  $http.get(endpoint + '/horodatage').
-    success(function(data, status, headers, config) {
-      data.reverse();
-      $scope.extract_list = data;
-      console.log(data);
-    }).
-    error(function(data, status, headers, config) {
-      console.log(data);
-      console.log(status);
-      console.log(headers);
+  $scope.numPerPage = 5;
+
+  $scope.extractListFiltered = {};
+  $scope.extractList = {};
+    console.log($http);
+
+  $http({method: 'GET', url: endpoint + '/horodatage'}).
+    then(function(response) {
+      console.log(response);
+      response.data.reverse();
+      $scope.extractList = response.data;
+      $scope.extractListFiltered = $scope.extractList.slice(0, $scope.numPerPage);
+      $scope.totalItems = response.data.length;
+    }, function(response) {
+      console.log(response);
     });
-});
+  $scope.delete_action = function () {
+      hashes = $scope.extractListFiltered
+               .filter((a) => a.checked)
+               .reduce((acc, val) => acc.concat([val.hash]), []);
+      console.log(hashes);
+  };
+
+  $scope.pageChanged = function() {
+    var begin = (($scope.currentPage - 1) * $scope.numPerPage);
+    var end = begin + $scope.numPerPage;
+
+    $scope.extractListFiltered = $scope.extractList.slice(begin, end);
+  };
+}]);
 
 function getParameterByName(name, url) {
     if (!url) {

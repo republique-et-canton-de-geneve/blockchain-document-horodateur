@@ -1,5 +1,4 @@
 ﻿<!DOCTYPE html>
-<html lang="fr" dir="ltr" prefix="content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ og: http://ogp.me/ns# rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
 <head>
 	<!--[if IE]><![endif]-->
 	<!-- Desactive le mode compatibilite dans IE. Cette balise doit etre la premiere juste apres le head.  
@@ -73,6 +72,9 @@
 	<script src="charte_2016/js/datepicker-fr.js?ody61c"></script>
 	<script src="charte_2016/js/jquery.cookie.js?ody61c"></script>
 	<script src="js/angular.min.js?ody61c"></script>
+	<script src="js/angular-animate.min.js?ody61c"></script>
+	<script src="js/angular-sanitize.min.js?ody61c"></script>
+	<script src="js/ui-bootstrap-tpls-2.5.0.min.js?ody61c"></script>
 	<script src="js/dropzone.js?ody61g"></script>
 	<script src="js/rcge.js?ody61c"></script>
 
@@ -171,66 +173,82 @@ Pour ce faire, il est nécessaire de télécharger l'extrait PDF et d'envoyer pa
 Les utilisateurs pourront vérifier l'extrait électronique depuis le validateur <a href="https://certif.blockchainpartner.ch/validateur.html">blockchain.ge.ch</a>.</br></br>
 Ces extraits n'ont pas de validités juridiques pour le moment et l'objectif est de s'inscrire dans le cadre de la mise en œuvre de l'ordonnance sur l'établissement d'actes authentiques électroniques et les légalisations électroniques (OAAE).</br></br>
 <div ng-controller="extract" ng-app="rc">
-         <div class="nest" id="DropZoneClose">
-            <div class="body-nest" id="DropZone">
-               <div id="uploadextraitzone" class="dropzone"></div>
-                   <div id="infobox" class="alert alert-info">Veuillez téléverser les fichiers extraits</div>
-               <button style="margin-top: 10px;" class="btn btn-primary" id="submit-all" onclick="processValidate()" >
-                   Horodater
-               </button>
-            </div>
-         </div>
-      <div class="col-md-11 col-md-offset-1">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Nom du fichier extrait</th>
-              <th>Identifiant de fichier</th>
-              <th>Identifiant de transaction</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="item in extract_list">
-              <th scope="row">{{ $index + 1 }}</th>
-              <td>{{ item.filename }}</td>
-              <td>{{ item.hash | limitTo:numLimit }}…&nbsp;<a href="/api/recu?hash={{ item.hash }}">
-                  <button type="button" class="btn btn-primary btn-sm">Reçu</button>
-                  </a>
-              </td>
-              <td><a href="https://ropsten.etherscan.io/tx/{{ item.transactionhash }}" target="_blank">{{ item.transactionhash | limitTo:numLimit }}…</a></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+	<div class="nest" id="DropZoneClose">
+		<div class="body-nest" id="DropZone">
+			<div id="uploadextraitzone" class="dropzone"></div>
+			<div id="infobox" class="alert alert-info">Veuillez téléverser les fichiers extraits</div>
+			<button style="margin-top: 10px;" class="btn btn-primary" id="submit-all" onclick="processValidate()" >
+				Horodater
+			</button>
+		</div>
+	</div>
+	<div class="col-md-11 col-md-offset-1">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Nom du fichier extrait</th>
+					<th>Date</th>
+					<th>Identifiant de fichier</th>
+					<th>Identifiant de transaction</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="item in extractListFiltered">
+					<th scope="row">{{ $index + 1 }}</th>
+					<td>{{ item.filename }}</td>
+					<td>{{ item.date }}</td>
+					<td>{{ item.hash | limitTo:numLimit }}…&nbsp;
+						<a href="/api/recu?hash={{ item.hash }}">
+							<button type="button" class="btn btn-primary btn-sm">Reçu</button>
+						</a>
+					</td>
+					<td>
+						<a href="https://ropsten.etherscan.io/tx/{{ item.transactionhash }}" target="_blank">{{ item.transactionhash | limitTo:numLimit }}…</a>
+					</td>
+					<td>
+						<input type="checkbox" ng-model="item.checked" ng-checked="item.checked">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+		<ul uib-pagination boundary-links="true" items-per-page="numPerPage" total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+		</div>
+		<div class="col-md-6">
+		<button type="button" ng-click="delete_action()" class="btn btn-danger btn-sm">Supprimer</button>
+		</div>
+	</div>
 </div>
-										<div id="pageBesoinAide">
-											<div class="container">
-												<div>
-													Besoin d'aide ?
+												<div id="pageBesoinAide">
+													<div class="container">
+														<div>
+															Besoin d'aide ?
+														</div>
+														<div>
+															<a href="mailto:e-demarches@etat.ge.ch" style="text-decoration: none; cursor: default;"><i class="fa fa-phone-square fa-lg"><!----></i></a>&nbsp;+41 840 235 235 (jours ouvrés)
+														</div>
+														<div>
+															<a href="mailto:e-demarches@etat.ge.ch"><i aria-hidden="false" class="fa fa-envelope-square fa-lg"><!----></i>
+															Formulaire de contact
+															</a>
+														</div>
+													</div>
 												</div>
-												<div>
-													<a href="mailto:e-demarches@etat.ge.ch" style="text-decoration: none; cursor: default;"><i class="fa fa-phone-square fa-lg"><!----></i></a>&nbsp;+41 840 235 235 (jours ouvrés)
-												</div>
-												<div>
-													<a href="mailto:e-demarches@etat.ge.ch"><i aria-hidden="false" class="fa fa-envelope-square fa-lg"><!----></i>
-													Formulaire de contact
-													</a>
-												</div>
-											</div>
+											</section>
 										</div>
-									</section>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
+					</section>
 				</div>
-			</section>
-		</div>
-	</div>
-	
-	<!-- FOOTER -->
+	</di		v>
+	    		
+	<!--		 FOOTER -->
 	<footer class="footer">
 		<!-- FOOTER HAUT GRIS CLAIR -->
 		<div class="footer_haut">
