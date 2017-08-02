@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 )
 
 func sendData(ctx context.Context, data []byte) (string, error) {
@@ -84,13 +85,14 @@ func UploadHandler(ctx context.Context, prefix string, handler http.Handler) htt
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		now := time.Now()
 		for i, v := range receipts {
 			if len(files) == 1 && i > 0 {
 				break
 			}
 			//fill receipt
 			v.Anchors = []merkle.AnchorPoint{merkle.AnchorPoint{SourceID: txhash, Type: "ETHData"}}
-			InsertReceipt(ctx, files[i].Filename, &v)
+			InsertReceipt(ctx, now, files[i].Filename, &v)
 		}
 		fmt.Println(merkleRoot)
 		fmt.Println(receipts)

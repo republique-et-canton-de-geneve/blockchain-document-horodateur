@@ -17,10 +17,11 @@ type Receipt struct {
 	TargetHash      string
 	TransactionHash string
 	Filename        string
+	Date            time.Time
 	JSONData        []byte
 }
 
-func InsertReceipt(ctx context.Context, filename string, rcpt *merkle.Chainpoint) error {
+func InsertReceipt(ctx context.Context, now time.Time, filename string, rcpt *merkle.Chainpoint) error {
 	jsonData, err := json.Marshal(rcpt)
 	if err != nil {
 		return err
@@ -35,6 +36,7 @@ func InsertReceipt(ctx context.Context, filename string, rcpt *merkle.Chainpoint
 		TargetHash:      rcpt.TargetHash,
 		JSONData:        jsonData,
 		TransactionHash: tx_hash,
+		Date:            now,
 		Filename:        filename,
 	}
 
@@ -65,6 +67,18 @@ func GetReceiptByHash(ctx context.Context, hash string) (*Receipt, bool, error) 
 		return nil, false, nil
 	}
 	return &rcpt, true, nil
+}
+
+func DelReceiptByHash(ctx context.Context, hash string) error {
+	db, ok := DBFromContext(ctx)
+	if !ok {
+		return fmt.Errorf("Could not obtain DB from Context")
+	}
+	cursor := db.Where(Receipt{TargetHash: hash}).Delete(Receipt{})
+	if cursor.Error != nil {
+		return fmt.Errorf("Error deleting for TargetHash (%v): %v", hash, cursor.Error)
+	}
+	return nil
 }
 
 func GetAllReceipts(ctx context.Context) ([]Receipt, error) {

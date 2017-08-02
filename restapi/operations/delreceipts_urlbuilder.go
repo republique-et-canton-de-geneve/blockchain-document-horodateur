@@ -11,19 +11,15 @@ import (
 	golangswaggerpaths "path"
 )
 
-// GetreceiptURL generates an URL for the getreceipt operation
-type GetreceiptURL struct {
-	Hash string
-
+// DelreceiptsURL generates an URL for the delreceipts operation
+type DelreceiptsURL struct {
 	_basePath string
-	// avoid unkeyed usage
-	_ struct{}
 }
 
 // WithBasePath sets the base path for this url builder, only required when it's different from the
 // base path specified in the swagger spec.
 // When the value of the base path is an empty string
-func (o *GetreceiptURL) WithBasePath(bp string) *GetreceiptURL {
+func (o *DelreceiptsURL) WithBasePath(bp string) *DelreceiptsURL {
 	o.SetBasePath(bp)
 	return o
 }
@@ -31,12 +27,12 @@ func (o *GetreceiptURL) WithBasePath(bp string) *GetreceiptURL {
 // SetBasePath sets the base path for this url builder, only required when it's different from the
 // base path specified in the swagger spec.
 // When the value of the base path is an empty string
-func (o *GetreceiptURL) SetBasePath(bp string) {
+func (o *DelreceiptsURL) SetBasePath(bp string) {
 	o._basePath = bp
 }
 
 // Build a url path and query string
-func (o *GetreceiptURL) Build() (*url.URL, error) {
+func (o *DelreceiptsURL) Build() (*url.URL, error) {
 	var result url.URL
 
 	var _path = "/recu"
@@ -44,20 +40,11 @@ func (o *GetreceiptURL) Build() (*url.URL, error) {
 	_basePath := o._basePath
 	result.Path = golangswaggerpaths.Join(_basePath, _path)
 
-	qs := make(url.Values)
-
-	hash := o.Hash
-	if hash != "" {
-		qs.Set("hash", hash)
-	}
-
-	result.RawQuery = qs.Encode()
-
 	return &result, nil
 }
 
 // Must is a helper function to panic when the url builder returns an error
-func (o *GetreceiptURL) Must(u *url.URL, err error) *url.URL {
+func (o *DelreceiptsURL) Must(u *url.URL, err error) *url.URL {
 	if err != nil {
 		panic(err)
 	}
@@ -68,17 +55,17 @@ func (o *GetreceiptURL) Must(u *url.URL, err error) *url.URL {
 }
 
 // String returns the string representation of the path with query string
-func (o *GetreceiptURL) String() string {
+func (o *DelreceiptsURL) String() string {
 	return o.Must(o.Build()).String()
 }
 
 // BuildFull builds a full url with scheme, host, path and query string
-func (o *GetreceiptURL) BuildFull(scheme, host string) (*url.URL, error) {
+func (o *DelreceiptsURL) BuildFull(scheme, host string) (*url.URL, error) {
 	if scheme == "" {
-		return nil, errors.New("scheme is required for a full url on GetreceiptURL")
+		return nil, errors.New("scheme is required for a full url on DelreceiptsURL")
 	}
 	if host == "" {
-		return nil, errors.New("host is required for a full url on GetreceiptURL")
+		return nil, errors.New("host is required for a full url on DelreceiptsURL")
 	}
 
 	base, err := o.Build()
@@ -92,6 +79,6 @@ func (o *GetreceiptURL) BuildFull(scheme, host string) (*url.URL, error) {
 }
 
 // StringFull returns the string representation of a complete url
-func (o *GetreceiptURL) StringFull(scheme, host string) string {
+func (o *DelreceiptsURL) StringFull(scheme, host string) string {
 	return o.Must(o.BuildFull(scheme, host)).String()
 }

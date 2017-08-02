@@ -21,6 +21,7 @@ func newOctetStream(r io.Reader, fn string) middleware.Responder {
 		io.Copy(w, r)
 	})
 }
+
 func GetreceiptHandler(ctx context.Context, params op.GetreceiptParams) middleware.Responder {
 	rcpt, ok, err := GetReceiptByHash(ctx, params.Hash)
 	if err != nil {
@@ -38,6 +39,16 @@ func GetreceiptHandler(ctx context.Context, params op.GetreceiptParams) middlewa
 	return newOctetStream(reader, filename)
 }
 
+func DelreceiptsHandler(ctx context.Context, params op.DelreceiptsParams) middleware.Responder {
+	for _, hash := range params.Hashes {
+		err := DelReceiptByHash(ctx, hash)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+	return op.NewDelreceiptsOK()
+}
+
 func ListtimestampedHandler(ctx context.Context, params op.ListtimestampedParams) middleware.Responder {
 	rcpts, err := GetAllReceipts(ctx)
 	if err != nil {
@@ -49,7 +60,8 @@ func ListtimestampedHandler(ctx context.Context, params op.ListtimestampedParams
 	for _, rcpt := range rcpts {
 		ret_rcpt := models.ReceiptFile{Filename: rcpt.Filename,
 			Hash:              rcpt.TargetHash,
-			Horodatingaddress: "0xTODO",
+			Horodatingaddress: "",
+			Date:              rcpt.Date.Unix(),
 			Transactionhash:   rcpt.TransactionHash,
 		}
 		ret = append(ret, &ret_rcpt)

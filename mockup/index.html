@@ -198,7 +198,7 @@ Ces extraits n'ont pas de validités juridiques pour le moment et l'objectif est
 				<tr ng-repeat="item in extractListFiltered">
 					<th scope="row">{{ $index + 1 }}</th>
 					<td>{{ item.filename }}</td>
-					<td>{{ item.date }}</td>
+					<td>{{ item.date * 1000 | date:'yyyy-MM-dd HH:mm'}}</td>
 					<td>{{ item.hash | limitTo:numLimit }}…&nbsp;
 						<a href="/api/recu?hash={{ item.hash }}">
 							<button type="button" class="btn btn-primary btn-sm">Reçu</button>
@@ -216,7 +216,7 @@ Ces extraits n'ont pas de validités juridiques pour le moment et l'objectif est
 	</div>
 	<div class="row">
 		<div class="col-md-6">
-		<ul uib-pagination boundary-links="true" items-per-page="numPerPage" total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+		<ul uib-pagination boundary-links="true" boundary-link-numbers="true" max-size="maxSize" items-per-page="numPerPage" total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
 		</div>
 		<div class="col-md-6">
 		<button type="button" ng-click="delete_action()" class="btn btn-danger btn-sm">Supprimer</button>

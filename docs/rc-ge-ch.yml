@@ -41,6 +41,26 @@ paths:
                     description: Internal error
                     schema:
                         $ref: '#/definitions/Error'
+        post:
+            summary: Supprime les reçus de la base de donnée
+            operationId: delreceipts
+            description: |
+                Supprimer les reçus de la base de donnée
+            parameters:
+              - name: hashes
+                in: body
+                schema:
+                  type: array
+                  items:
+                      type: string
+                required: true
+                description: Liste des hash à supprimer
+            responses:
+                200:
+                default:
+                    description: Internal error
+                    schema:
+                        $ref: '#/definitions/Error'
 #TODO put in an other services
 #        post:
 #            summary: Vérifie le reçu
@@ -124,6 +144,8 @@ definitions:
                 type: string
             transactionhash:
                 type: string
+            date:
+                type: integer
             horodatingaddress:
                 type: string
     Error:

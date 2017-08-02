@@ -3,7 +3,8 @@ var endpoint = '/api';
 angular.module('rc', ['ngAnimate', 'ngSanitize', 'ui.bootstrap'])
 .controller('extract', ['$scope', '$http', function($scope, $http) {
   $scope.numLimit = 16;
-  $scope.numPerPage = 5;
+  $scope.numPerPage = 10;
+  $scope.maxSize = 5;
 
   $scope.extractListFiltered = {};
   $scope.extractList = {};
@@ -23,7 +24,13 @@ angular.module('rc', ['ngAnimate', 'ngSanitize', 'ui.bootstrap'])
       hashes = $scope.extractListFiltered
                .filter((a) => a.checked)
                .reduce((acc, val) => acc.concat([val.hash]), []);
-      console.log(hashes);
+      $http({method: 'POST', url: endpoint + '/recu', data: hashes}).
+        then(function(response) {
+            location.reload();
+          console.log(response);
+        }, function(response) {
+          console.log(response);
+        });
   };
 
   $scope.pageChanged = function() {

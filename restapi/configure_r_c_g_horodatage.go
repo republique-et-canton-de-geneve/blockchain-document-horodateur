@@ -65,6 +65,9 @@ func configureAPI(api *operations.RCGHorodatageAPI) http.Handler {
 	api.GetreceiptHandler = operations.GetreceiptHandlerFunc(func(params operations.GetreceiptParams) middleware.Responder {
 		return internal.GetreceiptHandler(ctx, params)
 	})
+	api.DelreceiptsHandler = operations.DelreceiptsHandlerFunc(func(params operations.DelreceiptsParams) middleware.Responder {
+		return internal.DelreceiptsHandler(ctx, params)
+	})
 	api.ListtimestampedHandler = operations.ListtimestampedHandlerFunc(func(params operations.ListtimestampedParams) middleware.Responder {
 		return internal.ListtimestampedHandler(ctx, params)
 	})
