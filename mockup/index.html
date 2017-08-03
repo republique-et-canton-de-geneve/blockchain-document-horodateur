@@ -170,7 +170,7 @@
 										<div class="panel-main">
                                           L'Etat de Genève certifie les extraits électroniques grâce à la technologie <a href="https://demain.ge.ch/blog/geneve-lab/blockchain-presentee-discutee-lors-cafe-republique-numerique-22-03-2017">Blockchain</a>.
 Pour ce faire, il est nécessaire de télécharger l'extrait PDF et d'envoyer par email l'extrait et le reçu (formule de clôture).</br></br>
-Les utilisateurs pourront vérifier l'extrait électronique depuis le validateur <a href="https://certif.blockchainpartner.ch/validateur.html">blockchain.ge.ch</a>.</br></br>
+Les utilisateurs pourront vérifier l'extrait électronique depuis le validateur <a href="https://certif.blockchainpartner.ch/">blockchain.ge.ch</a>.</br></br>
 Ces extraits n'ont pas de validités juridiques pour le moment et l'objectif est de s'inscrire dans le cadre de la mise en œuvre de l'ordonnance sur l'établissement d'actes authentiques électroniques et les légalisations électroniques (OAAE).</br></br>
 <div ng-controller="extract" ng-app="rc">
 	<div class="nest" id="DropZoneClose">
@@ -200,7 +200,7 @@ Ces extraits n'ont pas de validités juridiques pour le moment et l'objectif est
 					<td>{{ item.filename }}</td>
 					<td>{{ item.date * 1000 | date:'yyyy-MM-dd HH:mm'}}</td>
 					<td>{{ item.hash | limitTo:numLimit }}…&nbsp;
-						<a href="/api/recu?hash={{ item.hash }}">
+						<a href="/horodatage/api/recu?hash={{ item.hash }}">
 							<button type="button" class="btn btn-primary btn-sm">Reçu</button>
 						</a>
 					</td>

@@ -1,4 +1,4 @@
-var endpoint = '/api';
+var endpoint = 'api';
 
 angular.module('rc', ['ngAnimate', 'ngSanitize', 'ui.bootstrap'])
 .controller('extract', ['$scope', '$http', function($scope, $http) {
@@ -73,7 +73,7 @@ function errormultiple(files, message, e) {
 }
 $(function() {
   uploadextraitzone = new Dropzone("div#uploadextraitzone", {
-    url : "/api/upload",
+    url : endpoint + "/upload",
     uploadMultiple: true,
     paramName: "myfiles",
     dictDefaultMessage: "Cliquez ici ou déplacer les extraits au format PDF",
