@@ -13,8 +13,9 @@ angular.module('rc', ['ngAnimate', 'ngSanitize', 'ui.bootstrap'])
   $http({method: 'GET', url: endpoint + '/horodatage'}).
     then(function(response) {
       console.log(response);
-      response.data.reverse();
-      $scope.extractList = response.data;
+      ret = response.data;
+      ret.reverse();
+      $scope.extractList = ret;
       $scope.extractListFiltered = $scope.extractList.slice(0, $scope.numPerPage);
       $scope.totalItems = response.data.length;
     }, function(response) {
