@@ -14,7 +14,7 @@ angular.module('rc', ['ngAnimate', 'ngSanitize', 'ui.bootstrap'])
     then(function(response) {
       console.log(response);
       ret = response.data;
-      ret.reverse();
+      ret.sort(function(a, b) { return b.date - a.date; });
       $scope.extractList = ret;
       $scope.extractListFiltered = $scope.extractList.slice(0, $scope.numPerPage);
       $scope.totalItems = response.data.length;
