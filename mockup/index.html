@@ -196,7 +196,7 @@ Ces extraits n'ont pas de validités juridiques pour le moment et l'objectif est
 			</thead>
 			<tbody>
 				<tr ng-repeat="item in extractListFiltered">
-					<th scope="row">{{ $index + 1 }}</th>
+					<th scope="row" style="background-color: #{{ item.hash | limitTo:6:2 }}">#</th>
 					<td>{{ item.filename }}</td>
 					<td>{{ item.date * 1000 | date:'yyyy-MM-dd HH:mm'}}</td>
 					<td>{{ item.hash | limitTo:numLimit }}…&nbsp;
