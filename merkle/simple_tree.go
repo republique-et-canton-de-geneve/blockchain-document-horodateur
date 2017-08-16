@@ -62,18 +62,13 @@ func SimpleHashFromHashes(hashes [][]byte) []byte {
 
 //--------------------------------------------------------------------------------
 
-type ChainpointLeafString struct {
-	Left  string `json:"left,omitempty"`  // Hashes from leaf's sibling to a root's child.
-	Right string `json:"right,omitempty"` // Hashes from leaf's sibling to a root's child.
-}
-
 type ChainpointLeaf struct {
-	Left  []byte `json:"left,omitempty"`  // Hashes from leaf's sibling to a root's child.
-	Right []byte `json:"right,omitempty"` // Hashes from leaf's sibling to a root's child.
+	Left  []byte // Hashes from leaf's sibling to a root's child.
+	Right []byte // Hashes from leaf's sibling to a root's child.
 }
 
 type ChainpointProof struct {
-	Aunts []ChainpointLeaf `json:"proof"` // Hashes from leaf's sibling to a root's child.
+	Aunts []ChainpointLeaf // Hashes from leaf's sibling to a root's child.
 }
 
 // proofs[0] is the proof for items[0].

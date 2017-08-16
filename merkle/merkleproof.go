@@ -21,6 +21,11 @@ type AnchorPoint struct {
 	Type     string `json:"type"`
 }
 
+type ChainpointLeafString struct {
+	Left  string `json:"left,omitempty"`  // Hashes from leaf's sibling to a root's child.
+	Right string `json:"right,omitempty"` // Hashes from leaf's sibling to a root's child.
+}
+
 type Chainpoint struct {
 	Context    string                 `json:"@context"`
 	Anchors    []AnchorPoint          `json:"anchors"`
