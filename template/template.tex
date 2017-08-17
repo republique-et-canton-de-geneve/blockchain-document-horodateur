@@ -36,7 +36,6 @@
 \usepackage{array,booktabs,tabularx}
 \listfiles
 
-\institute[CLS]{République et canton de Genève}
 \title{Reçu de validation d’extrait électronique sécurisé}
 \date{\today}
 
@@ -66,17 +65,31 @@ L’objectif est de s’inscrire dans le cadre de la mise en oeuvre de l’ordon
 \item Si l’extrait est bien celui délivré par l’Etat de Genève, un message vert vous l’indique. Si tel n’est pas le cas, une alerte en rouge vous informe que l’extrait n’est pas valable.
 \item  En complément, vous pouvez vérifier la transaction avec un explorateur Blockchain (par exemple  Etherscan : \url{https://etherscan.io/})
 \end{enumerate}
-  \medskip
-    
-  \begin{block}{Horodatage*}
- 
+}
+\end{minipage}
+\end{beamercolorbox}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\begin{columns}
+\begin{column}{0.95\textwidth}
+\begin{beamercolorbox}[center, wd=\textwidth]{postercolumn}
+\begin{minipage}[T]{0.95\textwidth}
+    \hfill
+\parbox[t][\columnheight]{\textwidth}{%
+
+\begin{block}{Horodatage}
 \begin{description}
 {{ range .Anchors }}
+\item [Horodatage]
+DATE
 \item [Identifiant de la transaction Ethereum d’ancrage] :\linebreak
 \href{https://etherscan.io/tx/{{ .SourceID }} }{ {{.SourceID }} }
 {{ end }}
 \item[Adresse Ethereum du Registre du Commerce] :\linebreak
-0x7c2da1611d0ee7b53f46310764cb5b6a2f376980
+0x37478cade8ba5afac3440f0c6f0817909cc19576
 \item[Racine de Merkle] :\linebreak
 {{ .MerkleRoot }}
 \item[Hash de votre extrait] :\linebreak
