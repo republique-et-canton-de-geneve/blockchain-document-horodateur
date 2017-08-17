@@ -206,7 +206,7 @@
 					<td>{{ item.filename }}</td>
 					<td>{{ item.date * 1000 | date:'yyyy-MM-dd HH:mm'}}</td>
 					<td>{{ item.hash | limitTo:numLimit }}…&nbsp;
-						<a href="/horodatage/api/recu?hash={{ item.hash }}">
+						<a href="api/recu?hash={{ item.hash }}">
 							<button type="button" class="btn btn-primary btn-sm">Reçu</button>
 						</a>
 					</td>
