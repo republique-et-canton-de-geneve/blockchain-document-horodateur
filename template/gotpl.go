@@ -33,7 +33,7 @@ func MakeTemplate(rcpt []byte, now time.Time) ([]byte, error) {
 	jsonData := strings.Trim(string(rcpt), "\n")
 	jsonData = strings.Replace(jsonData, "{", "\\{", -1)
 	jsonData = strings.Replace(jsonData, "}", "\\}", -1)
-	_rcpt.JsonData = fmt.Sprintf(":_JsOn_begin:%v:_JsOn_end:", jsonData)
+	_rcpt.JsonData = fmt.Sprintf(":JsOnbegin:%v:JsOnend:", jsonData)
 	tmpl := template.Must(template.ParseFiles(tmplFile))
 	f, err := os.Create(outFile)
 	if err != nil {
