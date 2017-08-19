@@ -7,11 +7,14 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"time"
 
 	models "github.com/Magicking/rc-ge-ch-pdf/models"
 	op "github.com/Magicking/rc-ge-ch-pdf/restapi/operations"
 	runtime "github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
+
+	tmpl "github.com/Magicking/rc-ge-ch-pdf/template"
 )
 
 func newOctetStream(r io.Reader, fn string) middleware.Responder {
@@ -34,8 +37,19 @@ func GetreceiptHandler(ctx context.Context, params op.GetreceiptParams) middlewa
 		log.Printf(err_str)
 		return op.NewGetreceiptDefault(500).WithPayload(&models.Error{Message: &err_str})
 	}
-	reader := bytes.NewReader(rcpt.JSONData)
-	filename := fmt.Sprintf("%s.json", rcpt.Filename)
+	if !ok {
+		err_str := fmt.Sprintf("No receipt found for %s", params.Hash)
+		log.Printf(err_str)
+		return op.NewGetreceiptDefault(500).WithPayload(&models.Error{Message: &err_str})
+	}
+	rcptPdf, err := tmpl.MakeTemplate(rcpt.JSONData, time.Now())
+	if err != nil {
+		err_str := fmt.Sprintf("Failed to call %s: %v", "MakeTemplate", err)
+		log.Printf(err_str)
+		return op.NewGetreceiptDefault(500).WithPayload(&models.Error{Message: &err_str})
+	}
+	reader := bytes.NewReader(rcptPdf)
+	filename := fmt.Sprintf("%s_recu.pdf", rcpt.Filename)
 	return newOctetStream(reader, filename)
 }
 

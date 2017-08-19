@@ -137,7 +137,7 @@
                 \raggedleft
                 \begin{column}{.25\paperwidth}
                   \begin{center}
-                      \includegraphics[width=.45\linewidth]{logo/logo.png}
+                      \includegraphics[width=.45\linewidth]{logo.png}
                   \end{center}
             	\end{column}
             \end{column}

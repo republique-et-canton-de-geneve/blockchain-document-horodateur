@@ -1,64 +1,62 @@
-package main
+package template
 
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/Magicking/rc-ge-ch-pdf/merkle"
+	"github.com/satori/go.uuid"
 	"io/ioutil"
-	"log"
 	"os"
+	"os/exec"
 	"strings"
 	"text/template"
+	"time"
 )
 
-type AnchorPoint struct {
-	SourceID string `json:"sourceId"`
-	Type     string `json:"type"`
-}
-
-type ChainpointLeafString struct {
-	Left  string `json:"left,omitempty"`  // Hashes from leaf's sibling to a root's child.
-	Right string `json:"right,omitempty"` // Hashes from leaf's sibling to a root's child.
-}
-
-type Chainpoint struct {
-	Context    string                 `json:"@context"`
-	Anchors    []AnchorPoint          `json:"anchors"`
-	MerkleRoot string                 `json:"merkleRoot"`
-	Proof      []ChainpointLeafString `json:"proof"`
-	TargetHash string                 `json:"targetHash"`
-	Type       string                 `json:"type"`
-}
-
 type ChainpointTex struct {
-	Chainpoint
-
+	merkle.Chainpoint
+	Date     string
 	JsonData string
 }
 
-func main() {
-	tmplFile := "template.tex"
-	rcptFile := "rcpt.json"
-	outFile := "output.tex"
+func MakeTemplate(rcpt []byte, now time.Time) ([]byte, error) {
+	tmplFile := "./template/latex/template.tex"
+	_uuid := uuid.NewV4().String()
+	outFile := fmt.Sprintf("/tmp/%s.tex", _uuid)
+	pdfFile := fmt.Sprintf("/tmp/%s.pdf", _uuid)
 
-	// Open Json file
-	raw, err := ioutil.ReadFile(rcptFile)
+	var _rcpt ChainpointTex
+	err := json.Unmarshal(rcpt, &_rcpt)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-
-	var rcpt ChainpointTex
-	err = json.Unmarshal(raw, &rcpt)
-	if err != nil {
-		log.Fatal(err)
-	}
-	jsonData := strings.Trim(string(raw), "\n")
+	jsonData := strings.Trim(string(rcpt), "\n")
 	jsonData = strings.Replace(jsonData, "{", "\\{", -1)
 	jsonData = strings.Replace(jsonData, "}", "\\}", -1)
-	rcpt.JsonData = fmt.Sprintf(":_JsOn_begin:%v:_JsOn_end:", jsonData)
+	_rcpt.JsonData = fmt.Sprintf(":_JsOn_begin:%v:_JsOn_end:", jsonData)
 	tmpl := template.Must(template.ParseFiles(tmplFile))
 	f, err := os.Create(outFile)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	tmpl.Execute(f, rcpt)
+	_rcpt.Date = fmt.Sprintf("%d-%02d-%02d", now.Year(), now.Month(), now.Day())
+	tmpl.Execute(f, _rcpt)
+	cmd := exec.Command("./template/make_receipt.sh", _uuid)
+
+	/*
+		go func() { // Watchdog function
+			time.Sleep(10 * time.Second)
+			cmd.Process.Kill()
+		}()*/
+	if err = cmd.Start(); err != nil {
+		return nil, err
+	}
+	if err = cmd.Wait(); err != nil {
+		return nil, err
+	}
+
+	pdf_receipt, err := ioutil.ReadFile(pdfFile)
+
+	os.Remove(pdfFile)
+	return pdf_receipt, nil
 }

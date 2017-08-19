@@ -26,8 +26,8 @@
 \usepackage{lmodern}
 \usepackage{tikz}
 \hypersetup{pdfinfo={
-    Title={Zombie Paranoia in the Bronx: A Study in Psychosocial Perceptions},
-    Author={John Smith},
+    Title={Reçu},
+    Author={République et canton de Genève},
     Subject={ {{ .JsonData}} }
 }
 }
@@ -82,9 +82,9 @@ L’objectif est de s’inscrire dans le cadre de la mise en oeuvre de l’ordon
 
 \begin{block}{Horodatage}
 \begin{description}
+\item [Horodatage] :\linebreak
+{{ .Date }}
 {{ range .Anchors }}
-\item [Horodatage]
-DATE
 \item [Identifiant de la transaction Ethereum d’ancrage] :\linebreak
 \href{https://etherscan.io/tx/{{ .SourceID }} }{ {{.SourceID }} }
 {{ end }}

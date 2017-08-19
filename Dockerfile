@@ -15,6 +15,7 @@ ADD models /go/src/${PROJECT_DIR}/models
 ADD restapi /go/src/${PROJECT_DIR}/restapi
 ADD merkle /go/src/${PROJECT_DIR}/merkle
 ADD internal /go/src/${PROJECT_DIR}/internal
+ADD template /go/src/${PROJECT_DIR}/template
 
 WORKDIR /go/src/${PROJECT_DIR}
 
