@@ -91,3 +91,36 @@
 [submodule "vendor/github.com/lib/pq"]
 	path = vendor/github.com/lib/pq
 	url = https://github.com/lib/pq
+[submodule "vendor/github.com/aristanetworks/goarista"]
+	path = vendor/github.com/aristanetworks/goarista
+	url = https://github.com/aristanetworks/goarista
+[submodule "vendor/github.com/go-stack/stack"]
+	path = vendor/github.com/go-stack/stack
+	url = https://github.com/go-stack/stack
+[submodule "vendor/github.com/pborman/uuid"]
+	path = vendor/github.com/pborman/uuid
+	url = https://github.com/pborman/uuid
+[submodule "vendor/github.com/rcrowley/go-metrics"]
+	path = vendor/github.com/rcrowley/go-metrics
+	url = https://github.com/rcrowley/go-metrics
+[submodule "vendor/github.com/rjeczalik/notify"]
+	path = vendor/github.com/rjeczalik/notify
+	url = https://github.com/rjeczalik/notify
+[submodule "vendor/github.com/rs/cors"]
+	path = vendor/github.com/rs/cors
+	url = https://github.com/rs/cors
+[submodule "vendor/github.com/rs/xhandler"]
+	path = vendor/github.com/rs/xhandler
+	url = https://github.com/rs/xhandler
+[submodule "vendor/github.com/satori/go.uuid"]
+	path = vendor/github.com/satori/go.uuid
+	url = https://github.com/satori/go.uuid
+[submodule "vendor/golang.org/x/tools"]
+	path = vendor/golang.org/x/tools
+	url = https://go.googlesource.com/tools
+[submodule "vendor/gopkg.in/fatih/set.v0"]
+	path = vendor/gopkg.in/fatih/set.v0
+	url = https://gopkg.in/fatih/set.v0
+[submodule "vendor/gopkg.in/karalabe/cookiejar.v2"]
+	path = vendor/gopkg.in/karalabe/cookiejar.v2
+	url = https://gopkg.in/karalabe/cookiejar.v2
