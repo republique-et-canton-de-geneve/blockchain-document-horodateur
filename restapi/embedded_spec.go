@@ -67,6 +67,12 @@ func init() {
             "name": "hash",
             "in": "query",
             "required": true
+          },
+          {
+            "type": "string",
+            "description": "Langue du reçu",
+            "name": "lang",
+            "in": "query"
           }
         ],
         "responses": {

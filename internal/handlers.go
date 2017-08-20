@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	models "github.com/Magicking/rc-ge-ch-pdf/models"
@@ -26,6 +27,15 @@ func newOctetStream(r io.Reader, fn string) middleware.Responder {
 }
 
 func GetreceiptHandler(ctx context.Context, params op.GetreceiptParams) middleware.Responder {
+	var lang string
+	if params.Lang != nil {
+		lang = strings.ToLower(*params.Lang)
+	}
+	switch lang {
+	case "fr", "de", "it", "en":
+	default:
+		lang = "fr"
+	}
 	rcpt, ok, err := GetReceiptByHash(ctx, params.Hash)
 	if err != nil {
 		err_str := fmt.Sprintf("Failed to call %s: %v", "GetReceiptByHash", err)
@@ -42,7 +52,7 @@ func GetreceiptHandler(ctx context.Context, params op.GetreceiptParams) middlewa
 		log.Printf(err_str)
 		return op.NewGetreceiptDefault(500).WithPayload(&models.Error{Message: &err_str})
 	}
-	rcptPdf, err := tmpl.MakeTemplate(rcpt.JSONData, time.Now())
+	rcptPdf, err := tmpl.MakeTemplate(rcpt.JSONData, lang, time.Now())
 	if err != nil {
 		err_str := fmt.Sprintf("Failed to call %s: %v", "MakeTemplate", err)
 		log.Printf(err_str)

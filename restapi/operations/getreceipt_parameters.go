@@ -37,6 +37,10 @@ type GetreceiptParams struct {
 	  In: query
 	*/
 	Hash string
+	/*Langue du reçu
+	  In: query
+	*/
+	Lang *string
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -49,6 +53,11 @@ func (o *GetreceiptParams) BindRequest(r *http.Request, route *middleware.Matche
 
 	qHash, qhkHash, _ := qs.GetOK("hash")
 	if err := o.bindHash(qHash, qhkHash, route.Formats); err != nil {
+		res = append(res, err)
+	}
+
+	qLang, qhkLang, _ := qs.GetOK("lang")
+	if err := o.bindLang(qLang, qhkLang, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -71,6 +80,20 @@ func (o *GetreceiptParams) bindHash(rawData []string, hasKey bool, formats strfm
 	}
 
 	o.Hash = raw
+
+	return nil
+}
+
+func (o *GetreceiptParams) bindLang(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	var raw string
+	if len(rawData) > 0 {
+		raw = rawData[len(rawData)-1]
+	}
+	if raw == "" { // empty values pass all other validations
+		return nil
+	}
+
+	o.Lang = &raw
 
 	return nil
 }

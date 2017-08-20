@@ -14,6 +14,7 @@ import (
 // GetreceiptURL generates an URL for the getreceipt operation
 type GetreceiptURL struct {
 	Hash string
+	Lang *string
 
 	_basePath string
 	// avoid unkeyed usage
@@ -49,6 +50,14 @@ func (o *GetreceiptURL) Build() (*url.URL, error) {
 	hash := o.Hash
 	if hash != "" {
 		qs.Set("hash", hash)
+	}
+
+	var lang string
+	if o.Lang != nil {
+		lang = *o.Lang
+	}
+	if lang != "" {
+		qs.Set("lang", lang)
 	}
 
 	result.RawQuery = qs.Encode()

@@ -19,8 +19,8 @@ type ChainpointTex struct {
 	JsonData string
 }
 
-func MakeTemplate(rcpt []byte, now time.Time) ([]byte, error) {
-	tmplFile := "./template/latex/template.tex"
+func MakeTemplate(rcpt []byte, lang string, now time.Time) ([]byte, error) {
+	tmplFile := fmt.Sprintf("./template/latex/template.%s.tex", lang)
 	_uuid := uuid.NewV4().String()
 	outFile := fmt.Sprintf("/tmp/%s.tex", _uuid)
 	pdfFile := fmt.Sprintf("/tmp/%s.pdf", _uuid)
