@@ -31,7 +31,11 @@ func sendData(ctx context.Context, data []byte) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("blkCtx.NC.SendTransaction: %v", err)
 	}
-	return tx.Hash().Hex(), nil
+	hashHex := tx.Hash().Hex()
+	if strings.HasPrefix(hashHex, "0x") {
+		hashHex = hashHex[2:]
+	}
+	return hashHex, nil
 }
 
 func UploadHandler(ctx context.Context, prefix string, handler http.Handler) http.Handler {
