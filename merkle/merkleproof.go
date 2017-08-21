@@ -53,8 +53,7 @@ func NewChainpoints(items []Hashable) ([]Chainpoint, []byte) {
 
 func (cp *Chainpoint) MerkleVerify() bool {
 	targetHash := common.Hex2Bytes(cp.TargetHash)
-	hash := SimpleHashFromTwoHashes(targetHash, nil)
 	aunts := ChainpointProofFromStringAunt(cp.Proof)
 	root := common.Hex2Bytes(cp.MerkleRoot)
-	return Verify(hash, aunts, root)
+	return Verify(targetHash, aunts, root)
 }

@@ -186,7 +186,7 @@ func trailsFromHashables(items []Hashable) (trails []*SimpleProofNode, root *Sim
 	case 0:
 		return nil, nil
 	case 1:
-		trail := &SimpleProofNode{items[0].Hash(), nil, nil, nil}
+		trail := &SimpleProofNode{items[0].Bytes(), nil, nil, nil}
 		return []*SimpleProofNode{trail}, trail
 	default:
 		lefts, leftRoot := trailsFromHashables(items[:(len(items)+1)/2])
