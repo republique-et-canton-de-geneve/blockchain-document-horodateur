@@ -42,7 +42,7 @@ func NewChainpoints(items []Hashable) ([]Chainpoint, []byte) {
 	}
 	unanchoredReceipts := make([]Chainpoint, len(items))
 	for i, v := range items {
-		unanchoredReceipts[i].Type = "Chainpoint3-256v2"
+		unanchoredReceipts[i].Type = "ChainpointSHA3-256v2"
 		unanchoredReceipts[i].Context = "https://w3id.org/chainpoint/v2"
 		unanchoredReceipts[i].Proof = proofs[i].Chainpoint()
 		unanchoredReceipts[i].MerkleRoot = common.Bytes2Hex(rootH)
