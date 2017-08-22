@@ -60,12 +60,11 @@ function successmultiple(files, message, e) {
     from = message.from;
     target_hash = message.target_hash;
     t = new Date(message.time * 1000);
-    display_str = "En attente d'ancrage dans un block Ethereum";
     $("#infobox").html(display_str);
     $("#infobox").attr("class", "alert alert-success");
     setTimeout(function () {
         location.reload();
-    }, 25000);
+    }, 25000); //TODO wait by polling+error handling
 }
 function errormultiple(files, message, e) {
     $("#infobox").text(message);
@@ -77,8 +76,8 @@ $(function() {
     url : endpoint + "/upload",
     uploadMultiple: true,
     paramName: "myfiles",
-    dictDefaultMessage: "Cliquez ici ou déplacer les extraits au format PDF",
-    dictFallbackMessage: "Cliquez ici ou déplacer les extraits au format PDF",
+    dictDefaultMessage: dictDefaultMessage,
+    dictFallbackMessage: dictDefaultMessage,
     parallelUploads: 256,
     autoProcessQueue: false,
     successmultiple: successmultiple,

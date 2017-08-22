@@ -76,6 +76,10 @@
 	<script src="js/angular-sanitize.min.js?ody61c"></script>
 	<script src="js/ui-bootstrap-tpls-2.5.0.min.js?ody61c"></script>
 	<script src="js/dropzone.js?ody61g"></script>
+    <script>
+var display_str = "Waiting for anchoring in the blockchain";
+var dictDefaultMessage = "Upload the PDF digital extract";
+    </script>
 	<script src="js/rcge.js?ody61c"></script>
 
 <!--[if gte mso 9]><xml>
@@ -168,12 +172,18 @@
 								<div class="region region-content">
 									<section id="block-system-main" class="block block-system clearfix">
 										<div class="panel-main">
-        <ul class="list-inline">
-            <li><a href="fr" role="button" class="imgInto liens-images-externes" title="Lire la version française">FR</a></li>
-            <li><a href="en" role="button" class="imgInto liens-images-externes" title="Read the english version">EN</a></li>
-            <li><a href="de" role="button" class="imgInto liens-images-externes" title="Lesen Sie die deutsche Version">DE</a></li>
-            <li><a href="it" role="button" class="imgInto liens-images-externes" title="Leggere la versione francese">IT</a></li>
+<!-- language-switcher-pills -->
+<div class="row">
+    <div class="col-xs-12 text-right">
+        <ul class="nav nav-pills pull-right" role="tablist" id="test-nav-lang-pills">
+            <li role="presentation"><a href="fr" role="tab">FR</a></li>
+            <li role="presentation" class="active"><a href="en" role="tab">EN</a></li>
+            <li role="presentation"><a href="de" role="tab">DE</a></li>
+            <li role="presentation"><a href="it" role="tab">IT</a></li>
         </ul>
+    </div>
+</div>
+<!-- /language-switcher-pills -->
 <p><strong><u>Secure electronic date stamp and signature</u></strong></p>
 
 <div>
@@ -200,7 +210,7 @@
 	<div class="nest" id="DropZoneClose">
 		<div class="body-nest" id="DropZone">
 			<div id="uploadextraitzone" class="dropzone"></div>
-			<div id="infobox" class="alert alert-info">Veuillez téléverser les fichiers extraits</div>
+			<div id="infobox" class="alert alert-info">Upload the PDF digital extract</div>
 			<button style="margin-top: 10px;" class="btn btn-primary" id="submit-all" onclick="processValidate()" >
 				Horodater
 			</button>
@@ -247,21 +257,12 @@
 		</div>
 	</div>
 </div>
-												<div id="pageBesoinAide">
-													<div class="container">
-														<div>
-															Besoin d'aide ?
-														</div>
-														<div>
-															<a href="mailto:e-demarches@etat.ge.ch" style="text-decoration: none; cursor: default;"><i class="fa fa-phone-square fa-lg"><!----></i></a>&nbsp;+41 840 235 235 (jours ouvrés)
-														</div>
-														<div>
-															<a href="mailto:e-demarches@etat.ge.ch"><i aria-hidden="false" class="fa fa-envelope-square fa-lg"><!----></i>
-															Formulaire de contact
-															</a>
-														</div>
-													</div>
-												</div>
+<div id="pageBesoinAide">
+      <div class="container">
+            <div> Please contact us if you have any further questions regarding the validation of documents. We will be happy to help you. </div>
+            <div><a href=" https://demain.ge.ch/contact-geneve-lab-blockchain" target="_blank"><i aria-hidden="false" class="fa fa-envelope-square fa-lg"><!----></i> Contact </a></div>
+      </div>
+</div>
 											</section>
 										</div>
 									</div>
@@ -270,7 +271,7 @@
 						</div>
 					</section>
 				</div>
-	</di		v>
+	</div>
 	    		
 	<!--		 FOOTER -->
 	<footer class="footer">
