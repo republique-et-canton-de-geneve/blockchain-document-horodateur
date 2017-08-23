@@ -232,7 +232,7 @@ var dictDefaultMessage = "Carica i file estratti";
 				<tr ng-repeat="item in extractListFiltered">
 					<th scope="row" style="background-color: #{{ item.transactionhash | limitTo:6:2 }}">
 						<a href="api/recu?hash={{ item.hash }}&lang=it">
-							<button type="button" class="btn btn-primary btn-sm">Certificato</button>
+							<button type="button" class="btn btn-primary btn-sm">Ricevuta</button>
 						</a>
                     </th>
 					<td>{{ item.filename }}</td>

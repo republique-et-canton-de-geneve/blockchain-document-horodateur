@@ -232,7 +232,7 @@ var dictDefaultMessage = "Upload the PDF digital extract";
 				<tr ng-repeat="item in extractListFiltered">
 					<th scope="row" style="background-color: #{{ item.transactionhash | limitTo:6:2 }}">
 						<a href="api/recu?hash={{ item.hash }}&lang=en">
-							<button type="button" class="btn btn-primary btn-sm">Certificate</button>
+							<button type="button" class="btn btn-primary btn-sm">Confirmation</button>
 						</a>
                     </th>
 					<td>{{ item.filename }}</td>

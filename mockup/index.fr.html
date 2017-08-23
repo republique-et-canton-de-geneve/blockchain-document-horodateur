@@ -231,7 +231,7 @@ var dictDefaultMessage = "Veuillez téléverser les fichiers extraits";
 				<tr ng-repeat="item in extractListFiltered">
 					<th scope="row" style="background-color: #{{ item.transactionhash | limitTo:6:2 }}">
 						<a href="api/recu?hash={{ item.hash }}&lang=fr">
-							<button type="button" class="btn btn-primary btn-sm">Certificat</button>
+							<button type="button" class="btn btn-primary btn-sm">Reçu</button>
 						</a>
                     </th>
 					<td>{{ item.filename }}</td>
