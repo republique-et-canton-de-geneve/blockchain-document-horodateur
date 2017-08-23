@@ -84,19 +84,21 @@ Vous retrouverez toutes les informations sur cette expérimentation sur ce lien 
 
 \begin{block}{Horodatage}
 \begin{description}
-\item [Horodatage] :\linebreak
+\item [Date d'impression du certificat] :\linebreak
 {{ .Date }}
 {{ range .Anchors }}
-\item [Identifiant de la transaction Ethereum d’ancrage] :\linebreak
+\item [Identifiant de la transaction Ethereum] :\linebreak
 \href{https://etherscan.io/tx/{{ .SourceID }} }{ {{.SourceID }} }
 {{ end }}
-\item[Adresse Ethereum du Registre du Commerce] :\linebreak
+\item[Adresse Ethereum du Registre du commerce] :\linebreak
 0x37478cade8ba5afac3440f0c6f0817909cc19576
 \item[Racine de Merkle] :\linebreak
 {{ .MerkleRoot }}
-\item[Hash de votre extrait] :\linebreak
+\item[Fonction de hachage] : \linebreak
+SHA3-256
+\item[Empreinte numérique de l'extrait] :\linebreak
 {{ .TargetHash }}
-\item[Chemin dans l’arbre de Merkle] :
+\item[Preuve de Merkle] :
 \end{description}
 \begin{itemize}
 {{ range .Proof }}

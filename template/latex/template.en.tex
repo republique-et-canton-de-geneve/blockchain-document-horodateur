@@ -48,7 +48,7 @@
 \begin{minipage}[T]{0.95\textwidth}
 \parbox[t][\columnheight]{\textwidth}{%
 \begin{block}{Secure electronic timestamping and signature}
-The State of Geneva is experimenting with Blockchain technology to date and sign digital documents. This is the first time in Switzerland that this promising technology is being used in this context, which is why the Confederation is supporting this project in the framework of the \href{https://www.egovernment.ch/fr/umsetzung/innovationen/innovations-20172018/}{2017/2018 Swiss E-Government innovation projects}.
+The State of Geneva is experimenting with Blockchain technology to date and sign digital documents. This is the first time in Switzerland that this promising technology is being used in this context, which is why the Confederation is supporting this project in the framework of the \href{https://www.egovernment.ch/en/umsetzung/innovationen/innovations-20172018/}{2017/2018 Swiss E-Government innovation projects}.
 \\
 \\
 During this pilot phase, the extracts are not legally valid. The goal is to participate in the implementation of the \href{https://www.ejpd.admin.ch/ejpd/fr/home/aktuell/news/2016/2016-09-07.html}{ruling relative to providing certified digital extracts and authorizations (OAAE)}.
@@ -84,26 +84,28 @@ You will find information about this experiment by following this link: \href{ht
 
 \begin{block}{Timestamp}
 \begin{description}
-\item [Horodatage] :\linebreak
+    \item [Certificate printing date] :\linebreak
 {{ .Date }}
 {{ range .Anchors }}
-\item [Identifiant de la transaction Ethereum d’ancrage] :\linebreak
+\item [Ethereum transaction identifier] :\linebreak
 \href{https://etherscan.io/tx/{{ .SourceID }} }{ {{.SourceID }} }
 {{ end }}
-\item[Adresse Ethereum du Registre du Commerce] :\linebreak
+\item[Registre du commerce's Ethereum address] :\linebreak
 0x37478cade8ba5afac3440f0c6f0817909cc19576
-\item[Racine de Merkle] :\linebreak
+\item[Merkle root] :\linebreak
 {{ .MerkleRoot }}
-\item[Hash de votre extrait] :\linebreak
+\item[Hash function] : \linebreak
+SHA3-256
+\item[Excerpt hash] :\linebreak
 {{ .TargetHash }}
-\item[Chemin dans l’arbre de Merkle] :
+\item[Merkle proof] :
 \end{description}
 \begin{itemize}
 {{ range .Proof }}
     {{ if .Left }}
-        \item Gauche {{ .Left }}
+        \item Left {{ .Left }}
     {{ else }}
-        \item Droite {{ .Right }}
+        \item Right {{ .Right }}
     {{ end }}
 {{ end }}
 \end{itemize}

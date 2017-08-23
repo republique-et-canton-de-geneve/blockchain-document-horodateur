@@ -48,7 +48,7 @@
 \begin{minipage}[T]{0.95\textwidth}
 \parbox[t][\columnheight]{\textwidth}{%
 \begin{block}{Orodatazione e firma di estratti elettronici securizzati}
-Lo Stato di Ginevra sta sperimentando la tecnologia Blockchain per orodatare e firmare gli estratti in formato digitale. È la prima volta in Svizzera che questa promettente tecnologia viene impiegata in questo contesto, motivo per cui la Confederazione sostiene questo progetto nel quadro dei \href{https://www.egovernment.ch/fr/umsetzung/innovationen/innovations-20172018/}{progetti di innovazione 2017/2018 di E-Government Svizzera}.
+    Lo Stato di Ginevra sta sperimentando la tecnologia Blockchain per orodatare e firmare gli estratti in formato digitale. È la prima volta in Svizzera che questa promettente tecnologia viene impiegata in questo contesto, motivo per cui la Confederazione sostiene questo progetto nel quadro dei \href{https://www.egovernment.ch/it/umsetzung/innovationen/innovazioni-20172018/}{progetti di innovazione 2017/2018 di E-Government Svizzera}.
 \\
 \\
 Durante questa fase pilota, gli estratti non hanno validità giuridica. L’obiettivo di questo progetto si iscrive nell’ambito dell’\href{https://www.ejpd.admin.ch/ejpd/it/home/aktuell/news/2016/2016-09-07.html}{ordinanza in materia di atti autentici elettronici e di legalizzazione elettronica (OAAE)}.
@@ -84,26 +84,29 @@ Per maggiori informazioni su questa fase di sperimentazione, si veda: \href{http
 
 \begin{block}{Timestamp}
 \begin{description}
-\item [Horodatage] :\linebreak
+\item [Data di stampa del certificato] :\linebreak
 {{ .Date }}
 {{ range .Anchors }}
-\item [Identifiant de la transaction Ethereum d’ancrage] :\linebreak
+\item [Identificatore transazione Ethereum] :\linebreak
 \href{https://etherscan.io/tx/{{ .SourceID }} }{ {{.SourceID }} }
 {{ end }}
-\item[Adresse Ethereum du Registre du Commerce] :\linebreak
+\item[Indirizzo Ethereum del Registre du commerce
+] :\linebreak
 0x37478cade8ba5afac3440f0c6f0817909cc19576
-\item[Racine de Merkle] :\linebreak
+\item[Radice di Merkle] :\linebreak
 {{ .MerkleRoot }}
-\item[Hash de votre extrait] :\linebreak
+\item[Funzione di hash] : \linebreak
+SHA3-256
+\item[Hash di estratto] :\linebreak
 {{ .TargetHash }}
-\item[Chemin dans l’arbre de Merkle] :
+\item[Prova di Merkle] :
 \end{description}
 \begin{itemize}
 {{ range .Proof }}
     {{ if .Left }}
-        \item Gauche {{ .Left }}
+        \item Sinistra {{ .Left }}
     {{ else }}
-        \item Droite {{ .Right }}
+        \item Destra {{ .Right }}
     {{ end }}
 {{ end }}
 \end{itemize}

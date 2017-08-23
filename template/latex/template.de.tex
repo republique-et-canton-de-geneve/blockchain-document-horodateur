@@ -48,7 +48,7 @@
 \begin{minipage}[T]{0.95\textwidth}
 \parbox[t][\columnheight]{\textwidth}{%
 \begin{block}{Zeitstempel und Signatur gesicherter elektronischer Auszüge}
-Der Kanton Genf erprobt zurzeit die Blockchain-Technologie, um digitale Auszüge mit einem Zeitstempel und einer elektronischen Signatur zu versehen. Da diese vielversprechende Technologie zum ersten Mal in diesem Zusammenhang genutzt wird, unterstützt der Bund dieses Projekt im Rahmen der \href{https://www.egovernment.ch/fr/umsetzung/innovationen/innovations-20172018/}{Innovationsprojekte 2017/2018 von E-Government Schweiz}.
+Der Kanton Genf erprobt zurzeit die Blockchain-Technologie, um digitale Auszüge mit einem Zeitstempel und einer elektronischen Signatur zu versehen. Da diese vielversprechende Technologie zum ersten Mal in diesem Zusammenhang genutzt wird, unterstützt der Bund dieses Projekt im Rahmen der \href{https://www.egovernment.ch/de/umsetzung/innovationen/innovationen-20172018/}{Innovationsprojekte 2017/2018 von E-Government Schweiz}.
 \\
 \\
 Während dieser Pilotphase haben die Auszüge keine Rechtsgültigkeit. Ziel ist es, die Umsetzung der \href{https://www.ejpd.admin.ch/ejpd/de/home/aktuell/news/2016/2016-09-07.html}{Verordnung über die elektronische öffentliche Beurkundung (EÖBV) zu unterstützen}.
@@ -84,26 +84,28 @@ Alle Informationen zu dieser Erprobungsphase finden Sie unter folgendem Link: \h
 
 \begin{block}{Zeitstempel}
 \begin{description}
-\item [Horodatage] :\linebreak
+    \item [Zertifikatsdruckdatum] :\linebreak
 {{ .Date }}
 {{ range .Anchors }}
-\item [Identifiant de la transaction Ethereum d’ancrage] :\linebreak
+\item [Transaktionskennung Ethereum] :\linebreak
 \href{https://etherscan.io/tx/{{ .SourceID }} }{ {{.SourceID }} }
 {{ end }}
-\item[Adresse Ethereum du Registre du Commerce] :\linebreak
+\item[Registre du Commerce Ethereum Anschrift] :\linebreak
 0x37478cade8ba5afac3440f0c6f0817909cc19576
-\item[Racine de Merkle] :\linebreak
+\item[Merkle Wurzel] :\linebreak
 {{ .MerkleRoot }}
-\item[Hash de votre extrait] :\linebreak
+\item[Hashfunktion] : \linebreak
+SHA3-256
+\item[Auszugs hash] :\linebreak
 {{ .TargetHash }}
-\item[Chemin dans l’arbre de Merkle] :
+\item[Beweis von Merkle] :
 \end{description}
 \begin{itemize}
 {{ range .Proof }}
     {{ if .Left }}
-        \item Gauche {{ .Left }}
+        \item Links {{ .Left }}
     {{ else }}
-        \item Droite {{ .Right }}
+        \item Recht {{ .Right }}
     {{ end }}
 {{ end }}
 \end{itemize}
