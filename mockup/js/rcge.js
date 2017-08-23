@@ -2,7 +2,7 @@ var endpoint = 'api';
 
 angular.module('rc', ['ngAnimate', 'ngSanitize', 'ui.bootstrap'])
 .controller('extract', ['$scope', '$http', function($scope, $http) {
-  $scope.numLimit = 16;
+  $scope.numLimit = 20;
   $scope.numPerPage = 10;
   $scope.maxSize = 5;
 

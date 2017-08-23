@@ -215,28 +215,28 @@ var dictDefaultMessage = "Bitte laden Sie extrahierte Dateien hoch";
 			</button>
 		</div>
 	</div>
-	<div class="col-md-11 col-md-offset-1">
+	<div class="col-md-12">
 		<table class="table">
 			<thead>
 				<tr>
 					<th>#</th>
-					<th>Nom du fichier extrait</th>
+					<th>Beleg Dateiname</th>
 					<th>Date</th>
-					<th>Identifiant de fichier</th>
-					<th>Identifiant de transaction</th>
+					<th>Auszugs hash</th>
+					<th>Transaktionskennung Ethereum</th>
 					<th>&nbsp;</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="item in extractListFiltered">
-					<th scope="row" style="background-color: #{{ item.transactionhash | limitTo:6:2 }}">#</th>
+					<th scope="row" style="background-color: #{{ item.transactionhash | limitTo:6:2 }}">
+						<a href="api/recu?hash={{ item.hash }}&lang=de">
+							<button type="button" class="btn btn-primary btn-sm">Zertifikat</button>
+						</a>
+                    </th>
 					<td>{{ item.filename }}</td>
 					<td>{{ item.date * 1000 | date:'yyyy-MM-dd HH:mm'}}</td>
-					<td>{{ item.hash | limitTo:numLimit }}…&nbsp;
-						<a href="api/recu?hash={{ item.hash }}&lang=de">
-							<button type="button" class="btn btn-primary btn-sm">Reçu</button>
-						</a>
-					</td>
+					<td>{{ item.hash | limitTo:numLimit }}…</td>
 					<td>
 						<a href="https://etherscan.io/tx/{{ item.transactionhash }}" target="_blank">{{ item.transactionhash | limitTo:numLimit }}…</a>
 					</td>
@@ -252,7 +252,7 @@ var dictDefaultMessage = "Bitte laden Sie extrahierte Dateien hoch";
 		<ul uib-pagination boundary-links="true" boundary-link-numbers="true" max-size="maxSize" items-per-page="numPerPage" total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
 		</div>
 		<div class="col-md-6">
-		<button type="button" ng-click="delete_action()" class="btn btn-danger btn-sm">Supprimer</button>
+		<button type="button" ng-click="delete_action()" class="btn btn-danger btn-sm">Löschen</button>
 		</div>
 	</div>
 </div>
