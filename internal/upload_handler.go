@@ -27,7 +27,7 @@ func sendData(ctx context.Context, data []byte) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("blkCtx.AO.Sign: %v", err)
 	}
-	blkCtx.NC.SendTransaction(context.TODO(), tx)
+	err = blkCtx.NC.SendTransaction(context.TODO(), tx)
 	if err != nil {
 		return "", fmt.Errorf("blkCtx.NC.SendTransaction: %v", err)
 	}
