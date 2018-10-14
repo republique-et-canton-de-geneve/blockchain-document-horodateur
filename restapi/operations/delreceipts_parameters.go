@@ -12,12 +12,14 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
+
+	strfmt "github.com/go-openapi/strfmt"
 )
 
 // NewDelreceiptsParams creates a new DelreceiptsParams object
-// with the default values initialized.
+// no default values defined in spec.
 func NewDelreceiptsParams() DelreceiptsParams {
-	var ()
+
 	return DelreceiptsParams{}
 }
 
@@ -28,7 +30,7 @@ func NewDelreceiptsParams() DelreceiptsParams {
 type DelreceiptsParams struct {
 
 	// HTTP Request Object
-	HTTPRequest *http.Request
+	HTTPRequest *http.Request `json:"-"`
 
 	/*Liste des hash à supprimer
 	  Required: true
@@ -38,9 +40,12 @@ type DelreceiptsParams struct {
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
-// for simple values it will use straight method calls
+// for simple values it will use straight method calls.
+//
+// To ensure default values, the struct must have been initialized with NewDelreceiptsParams() beforehand.
 func (o *DelreceiptsParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
 	var res []error
+
 	o.HTTPRequest = r
 
 	if runtime.HasBody(r) {
@@ -52,20 +57,25 @@ func (o *DelreceiptsParams) BindRequest(r *http.Request, route *middleware.Match
 			} else {
 				res = append(res, errors.NewParseError("hashes", "body", "", err))
 			}
-
 		} else {
 
-			if len(res) == 0 {
-				o.Hashes = body
+			// validate inline body array
+			o.Hashes = body
+			if err := o.validateHashesBody(route.Formats); err != nil {
+				res = append(res, err)
 			}
 		}
-
 	} else {
 		res = append(res, errors.Required("hashes", "body"))
 	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+// validateHashesBody validates an inline body parameter
+func (o *DelreceiptsParams) validateHashesBody(formats strfmt.Registry) error {
+
 	return nil
 }

@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/Magicking/rc-ge-ch-pdf/models"
+	models "github.com/Magicking/rc-ge-ch-pdf/models"
 )
 
 // DelreceiptsOKCode is the HTTP code returned for type DelreceiptsOK
@@ -25,11 +25,14 @@ type DelreceiptsOK struct {
 
 // NewDelreceiptsOK creates DelreceiptsOK with default headers values
 func NewDelreceiptsOK() *DelreceiptsOK {
+
 	return &DelreceiptsOK{}
 }
 
 // WriteResponse to the client
 func (o *DelreceiptsOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
 	rw.WriteHeader(200)
 }

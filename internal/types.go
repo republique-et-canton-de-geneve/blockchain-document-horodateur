@@ -2,9 +2,10 @@ package internal
 
 import (
 	"context"
+	"log"
+
 	blktk "github.com/Magicking/gethitihteg"
 	"github.com/jinzhu/gorm"
-	"log"
 )
 
 type key int
@@ -27,7 +28,7 @@ func CCFromContext(ctx context.Context) (*blktk.ClientConnector, bool) {
 }
 
 func NewBLKToContext(ctx context.Context, wsURI, privateKey string) context.Context {
-	blk, err := blktk.NewBlockchainContext(wsURI, privateKey)
+	blk, err := blktk.NewBlockchainContext(wsURI, privateKey, 5)
 	if err != nil {
 		log.Fatalf("Could not initialize blockchain context: %v", err)
 	}
