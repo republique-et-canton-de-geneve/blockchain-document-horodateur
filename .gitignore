@@ -5,3 +5,6 @@
 *.pdf
 *.snm
 *.toc
+
+# SonarQube
+.scannerwork/
