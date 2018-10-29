@@ -13,9 +13,9 @@ import (
 )
 
 // NewListtimestampedParams creates a new ListtimestampedParams object
-// with the default values initialized.
+// no default values defined in spec.
 func NewListtimestampedParams() ListtimestampedParams {
-	var ()
+
 	return ListtimestampedParams{}
 }
 
@@ -26,13 +26,16 @@ func NewListtimestampedParams() ListtimestampedParams {
 type ListtimestampedParams struct {
 
 	// HTTP Request Object
-	HTTPRequest *http.Request
+	HTTPRequest *http.Request `json:"-"`
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
-// for simple values it will use straight method calls
+// for simple values it will use straight method calls.
+//
+// To ensure default values, the struct must have been initialized with NewListtimestampedParams() beforehand.
 func (o *ListtimestampedParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
 	var res []error
+
 	o.HTTPRequest = r
 
 	if len(res) > 0 {

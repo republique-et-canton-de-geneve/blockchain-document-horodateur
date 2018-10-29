@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/Magicking/rc-ge-ch-pdf/models"
+	models "github.com/Magicking/rc-ge-ch-pdf/models"
 )
 
 // GetreceiptOKCode is the HTTP code returned for type GetreceiptOK
@@ -26,22 +26,23 @@ type GetreceiptOK struct {
 	/*
 	  In: Body
 	*/
-	Payload runtime.File `json:"body,omitempty"`
+	Payload models.GetreceiptOKBody `json:"body,omitempty"`
 }
 
 // NewGetreceiptOK creates GetreceiptOK with default headers values
 func NewGetreceiptOK() *GetreceiptOK {
+
 	return &GetreceiptOK{}
 }
 
 // WithPayload adds the payload to the getreceipt o k response
-func (o *GetreceiptOK) WithPayload(payload runtime.File) *GetreceiptOK {
+func (o *GetreceiptOK) WithPayload(payload models.GetreceiptOKBody) *GetreceiptOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the getreceipt o k response
-func (o *GetreceiptOK) SetPayload(payload runtime.File) {
+func (o *GetreceiptOK) SetPayload(payload models.GetreceiptOKBody) {
 	o.Payload = payload
 }
 

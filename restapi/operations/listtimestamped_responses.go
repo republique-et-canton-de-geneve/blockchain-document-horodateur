@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/Magicking/rc-ge-ch-pdf/models"
+	models "github.com/Magicking/rc-ge-ch-pdf/models"
 )
 
 // ListtimestampedOKCode is the HTTP code returned for type ListtimestampedOK
@@ -31,6 +31,7 @@ type ListtimestampedOK struct {
 
 // NewListtimestampedOK creates ListtimestampedOK with default headers values
 func NewListtimestampedOK() *ListtimestampedOK {
+
 	return &ListtimestampedOK{}
 }
 
