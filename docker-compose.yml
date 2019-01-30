@@ -6,6 +6,8 @@ services:
       - WS_URI=https://rinkeby.infura.io/v3/afeacc980c634655875d915ed65cb0e4
       - PRIVATE_KEY=63007E20C822A425B0A7B0C9FF2E2AD54BE313DCE9BCEC6963412021F8F2D2D7
       - DB_DSN=host=postgres user=tsUhfmkMfY dbname=rcgehorodatage sslmode=disable password=lrwOuiz4gH
+      - ERROR_THRESHOLD=1
+      - WARNING_THRESHOLD=0.1
     links:
       - postgres
 
