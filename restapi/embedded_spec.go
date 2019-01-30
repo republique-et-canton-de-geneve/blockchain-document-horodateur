@@ -122,6 +122,45 @@ func init() {
           }
         }
       }
+    },
+    "/sonde": {
+      "get": {
+        "description": "Retourne quatres flag correspondant respectivement à la bonne connexion à un noeud Infura, la balance supérieure à 1 ETH, supérieure à 0,1 ETH et le bon fonctionnement d'une requête vers la base de données\n",
+        "summary": "Retourne quatres flag correspondant respectivement à la bonne connexion à un noeud Infura, la balance supérieure à 1 ETH, supérieure à 0,1 ETH et le bon fonctionnement d'une requête vers la base de données.",
+        "operationId": "monitoring",
+        "responses": {
+          "200": {
+            "description": "Tout est en ordre et fonctionne correctement.\n",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "balanceErrorThresholdExceeded": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "balanceWarningThresholdExceeded": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "ethereumActive": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "persistenceActive": {
+                  "type": "boolean",
+                  "example": true
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -232,7 +271,7 @@ func init() {
           "200": {
             "description": "Fichier de reçu de l'horodatage certifié blockchain\n",
             "schema": {
-              "$ref": "#/definitions/getreceiptOKBody"
+              "type": "file"
             }
           },
           "default": {
@@ -263,6 +302,45 @@ func init() {
         ],
         "responses": {
           "200": {},
+          "default": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/sonde": {
+      "get": {
+        "description": "Retourne quatres flag correspondant respectivement à la bonne connexion à un noeud Infura, la balance supérieure à 1 ETH, supérieure à 0,1 ETH et le bon fonctionnement d'une requête vers la base de données\n",
+        "summary": "Retourne quatres flag correspondant respectivement à la bonne connexion à un noeud Infura, la balance supérieure à 1 ETH, supérieure à 0,1 ETH et le bon fonctionnement d'une requête vers la base de données.",
+        "operationId": "monitoring",
+        "responses": {
+          "200": {
+            "description": "Tout est en ordre et fonctionne correctement.\n",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "balanceErrorThresholdExceeded": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "balanceWarningThresholdExceeded": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "ethereumActive": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "persistenceActive": {
+                  "type": "boolean",
+                  "example": true
+                }
+              }
+            }
+          },
           "default": {
             "description": "Internal error",
             "schema": {
@@ -312,10 +390,6 @@ func init() {
           "type": "string"
         }
       }
-    },
-    "getreceiptOKBody": {
-      "type": "file",
-      "x-go-gen-location": "operations"
     }
   }
 }`))

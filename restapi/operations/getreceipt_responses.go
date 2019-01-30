@@ -6,6 +6,7 @@ package operations
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"io"
 	"net/http"
 
 	"github.com/go-openapi/runtime"
@@ -26,7 +27,7 @@ type GetreceiptOK struct {
 	/*
 	  In: Body
 	*/
-	Payload models.GetreceiptOKBody `json:"body,omitempty"`
+	Payload io.ReadCloser `json:"body,omitempty"`
 }
 
 // NewGetreceiptOK creates GetreceiptOK with default headers values
@@ -36,13 +37,13 @@ func NewGetreceiptOK() *GetreceiptOK {
 }
 
 // WithPayload adds the payload to the getreceipt o k response
-func (o *GetreceiptOK) WithPayload(payload models.GetreceiptOKBody) *GetreceiptOK {
+func (o *GetreceiptOK) WithPayload(payload io.ReadCloser) *GetreceiptOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the getreceipt o k response
-func (o *GetreceiptOK) SetPayload(payload models.GetreceiptOKBody) {
+func (o *GetreceiptOK) SetPayload(payload io.ReadCloser) {
 	o.Payload = payload
 }
 

@@ -1,15 +1,14 @@
 package internal
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"log"
-	"time"
-
-	"context"
 	"github.com/Magicking/rc-ge-ch-pdf/merkle"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"log"
+	"time"
 )
 
 type Receipt struct {
@@ -19,6 +18,18 @@ type Receipt struct {
 	Filename        string
 	Date            time.Time
 	JSONData        []byte
+}
+
+var NodeAddress string
+
+func GetNodeSignal(ctx context.Context) (bool){
+	fmt.Println(NodeAddress, " URI")
+	ctxt := NewCCToContext(ctx, NodeAddress)
+	_, ok := CCFromContext(ctxt)
+	if !ok {
+		log.Fatalf("Could not obtain ClientConnector from context\n")
+	}
+	return ok
 }
 
 func InsertReceipt(ctx context.Context, now time.Time, filename string, rcpt *merkle.Chainpoint) error {
@@ -95,9 +106,11 @@ func GetAllReceipts(ctx context.Context) ([]Receipt, error) {
 	return receipts, nil
 }
 
-func InitDatabase(dbDsn string) (*gorm.DB, error) {
+func InitDatabase(dbDsn string, nodeAddress string) (*gorm.DB, error) {
 	var err error
 	var db *gorm.DB
+
+	NodeAddress = nodeAddress
 
 	for i := 1; i < 10; i++ {
 		db, err = gorm.Open("postgres", dbDsn)

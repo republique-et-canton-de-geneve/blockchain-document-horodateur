@@ -3,13 +3,13 @@ package restapi
 import (
 	"context"
 	"crypto/tls"
+	//"fmt"
 	"net/http"
 
 	errors "github.com/go-openapi/errors"
 	runtime "github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
 	swag "github.com/go-openapi/swag"
-	graceful "github.com/tylerb/graceful"
 
 	internal "github.com/Magicking/rc-ge-ch-pdf/internal"
 	"github.com/Magicking/rc-ge-ch-pdf/restapi/operations"
@@ -17,7 +17,7 @@ import (
 
 // This file is safe to edit. Once it exists it will not be overwritten
 
-//go:generate swagger generate server --target .. --name  --spec ../docs/rc-ge-ch.yml
+//go:generate swagger generate server --target .. --spec ../docs/rc-ge-ch.yml
 
 var ethopts struct {
 	WsURI      string `long:"ws-uri" env:"WS_URI" description:"Ethereum WS URI (e.g: ws://HOST:8546)"`
@@ -40,7 +40,7 @@ func configureFlags(api *operations.RCGHorodatageAPI) {
 		Options:          &serviceopts,
 	}
 	api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ethOpts, serviceOpts}
-}
+	}
 
 func configureAPI(api *operations.RCGHorodatageAPI) http.Handler {
 	// configure the api here
@@ -51,8 +51,7 @@ func configureAPI(api *operations.RCGHorodatageAPI) http.Handler {
 	//
 	// Example:
 	// s.api.Logger = log.Printf
-
-	ctx := internal.NewDBToContext(context.Background(), serviceopts.DbDSN)
+	ctx := internal.NewDBToContext(context.Background(), serviceopts.DbDSN, ethopts.WsURI)
 	ctx = internal.NewCCToContext(ctx, ethopts.WsURI)
 	ctx = internal.NewBLKToContext(ctx, ethopts.WsURI, ethopts.PrivateKey)
 
@@ -71,7 +70,9 @@ func configureAPI(api *operations.RCGHorodatageAPI) http.Handler {
 	api.ListtimestampedHandler = operations.ListtimestampedHandlerFunc(func(params operations.ListtimestampedParams) middleware.Responder {
 		return internal.ListtimestampedHandler(ctx, params)
 	})
-
+	api.MonitoringHandler = operations.MonitoringHandlerFunc(func(params operations.MonitoringParams) middleware.Responder {
+		return internal.MonitoringHandler(ctx, params)
+	})
 	api.ServerShutdown = func() {}
 
 	return setupGlobalMiddleware(ctx, api.Serve(setupMiddlewares))
@@ -86,7 +87,7 @@ func configureTLS(tlsConfig *tls.Config) {
 // If you need to modify a config, store server instance to stop it individually later, this is the place.
 // This function can be called multiple times, depending on the number of serving schemes.
 // scheme value will be set accordingly: "http", "https" or "unix"
-func configureServer(s *graceful.Server, scheme, addr string) {
+func configureServer(s *http.Server, scheme, addr string) {
 }
 
 // The middleware configuration is for the handler executors. These do not apply to the swagger.json document.
