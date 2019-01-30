@@ -95,9 +95,19 @@ func ListtimestampedHandler(ctx context.Context, params op.ListtimestampedParams
 
 func MonitoringHandler(ctx context.Context, params op.MonitoringParams) (middleware.Responder){
 	fmt.Println("We are here")
+	//sonde := new(Sonde)
 	nodeOk := GetNodeSignal(ctx)
 	if !nodeOk {
+	//	sonde = {
+	//		ethereumActive: false
+	//	},
 		return op.NewMonitoringDefault(500)
+	}
+//	GetEthereumBalance()
+	ethBal, errorThreshold, warningThreshold := GetEthereumBalance()
+
+	if ethBal < errorThreshold {
+
 	}
 	//_sonde := Sonde{
 	//	ethereumActive: true,

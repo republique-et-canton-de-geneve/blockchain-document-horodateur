@@ -8,7 +8,11 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"log"
+	"math"
+	"math/big"
 	"time"
+	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 type Receipt struct {
@@ -28,6 +32,10 @@ type Sonde struct {
 }
 
 var NodeAddress string
+var LockedAddress string
+//Maybe error is warning and vice-versa
+var ErrorThreshold int
+var WarningThreshold int
 
 func GetNodeSignal(ctx context.Context) (bool){
 	fmt.Println(NodeAddress, " URI")
@@ -37,6 +45,20 @@ func GetNodeSignal(ctx context.Context) (bool){
 		log.Fatalf("Could not obtain ClientConnector from context\n")
 	}
 	return ok
+}
+
+func GetEthereumBalance() (*big.Float, int, int) {
+	client, err := ethclient.Dial(NodeAddress)
+	account := common.HexToAddress(LockedAddress)
+	balance, err := client.BalanceAt(context.Background(), account, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fbalance := new(big.Float)
+	fbalance.SetString(balance.String())
+	ethValue := new(big.Float).Quo(fbalance, big.NewFloat(math.Pow10(18)))
+	fmt.Println(ethValue)
+	return ethValue, ErrorThreshold, WarningThreshold
 }
 
 func InsertReceipt(ctx context.Context, now time.Time, filename string, rcpt *merkle.Chainpoint) error {
@@ -113,11 +135,14 @@ func GetAllReceipts(ctx context.Context) ([]Receipt, error) {
 	return receipts, nil
 }
 
-func InitDatabase(dbDsn string, nodeAddress string) (*gorm.DB, error) {
+func InitDatabase(dbDsn string, nodeAddress string, lockedAddress string, errorThreshold int, warningThreshold int) (*gorm.DB, error) {
 	var err error
 	var db *gorm.DB
 
 	NodeAddress = nodeAddress
+	LockedAddress = lockedAddress
+	ErrorThreshold = errorThreshold
+	WarningThreshold = warningThreshold
 
 	for i := 1; i < 10; i++ {
 		db, err = gorm.Open("postgres", dbDsn)

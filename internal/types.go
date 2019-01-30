@@ -40,8 +40,8 @@ func BLKFromContext(ctx context.Context) (*blktk.BlockchainContext, bool) {
 	return blk, ok
 }
 
-func NewDBToContext(ctx context.Context, dbDsn string, nodeAddress string) context.Context {
-	db, err := InitDatabase(dbDsn, nodeAddress)
+func NewDBToContext(ctx context.Context, dbDsn string, nodeAddress string, lockedAddress string, errorThreshold int, warningThreshold int) context.Context {
+	db, err := InitDatabase(dbDsn, nodeAddress, lockedAddress, errorThreshold, warningThreshold)
 	if err != nil {
 		log.Fatalf("Could not initialize database: %v", err)
 	}

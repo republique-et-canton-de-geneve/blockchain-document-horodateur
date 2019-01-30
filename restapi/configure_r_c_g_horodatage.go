@@ -3,7 +3,7 @@ package restapi
 import (
 	"context"
 	"crypto/tls"
-	//"fmt"
+	"fmt"
 	"net/http"
 
 	errors "github.com/go-openapi/errors"
@@ -22,6 +22,9 @@ import (
 var ethopts struct {
 	WsURI      string `long:"ws-uri" env:"WS_URI" description:"Ethereum WS URI (e.g: ws://HOST:8546)"`
 	PrivateKey string `long:"pkey" env:"PRIVATE_KEY" description:"hex encoded private key"`
+	LockedAddress string `long:"locked-addr" env:"LOCKED_ADDR" description:"Ethereum address of the sole verifier (anchor emitter)"`
+	ErrorThreshold int `long:"error-threshold" env:"ERROR_THRESHOLD" description:""`
+	WarningThreshold int `long:"warning-threshold" env:"WARNING_THRESHOLD" description:""`
 }
 
 var serviceopts struct {
@@ -45,13 +48,13 @@ func configureFlags(api *operations.RCGHorodatageAPI) {
 func configureAPI(api *operations.RCGHorodatageAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
-
+	fmt.Println(ethopts.LockedAddress)
 	// Set your custom logger if needed. Default one is log.Printf
 	// Expected interface func(string, ...interface{})
 	//
 	// Example:
 	// s.api.Logger = log.Printf
-	ctx := internal.NewDBToContext(context.Background(), serviceopts.DbDSN, ethopts.WsURI)
+	ctx := internal.NewDBToContext(context.Background(), serviceopts.DbDSN, ethopts.WsURI, ethopts.LockedAddress, ethopts.ErrorThreshold, ethopts.WarningThreshold)
 	ctx = internal.NewCCToContext(ctx, ethopts.WsURI)
 	ctx = internal.NewBLKToContext(ctx, ethopts.WsURI, ethopts.PrivateKey)
 
