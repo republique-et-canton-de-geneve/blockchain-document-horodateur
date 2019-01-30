@@ -20,6 +20,13 @@ type Receipt struct {
 	JSONData        []byte
 }
 
+type Sonde struct {
+	ethereumActive						bool
+	//balanceErrorThresholdExceeded		bool
+	//balanceWarningThresholdExceeded 	bool
+	//persistenceActive					bool
+}
+
 var NodeAddress string
 
 func GetNodeSignal(ctx context.Context) (bool){

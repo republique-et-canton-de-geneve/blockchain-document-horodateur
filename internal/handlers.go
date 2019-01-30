@@ -93,12 +93,14 @@ func ListtimestampedHandler(ctx context.Context, params op.ListtimestampedParams
 	return op.NewListtimestampedOK().WithPayload(ret)
 }
 
-func MonitoringHandler(ctx context.Context, params op.MonitoringParams) middleware.Responder  {
+func MonitoringHandler(ctx context.Context, params op.MonitoringParams) (middleware.Responder){
 	fmt.Println("We are here")
 	nodeOk := GetNodeSignal(ctx)
 	if !nodeOk {
 		return op.NewMonitoringDefault(500)
 	}
-
+	//_sonde := Sonde{
+	//	ethereumActive: true,
+	//}
 	return op.NewMonitoringOK()
 }
