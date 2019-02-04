@@ -132,24 +132,9 @@ func init() {
           "200": {
             "description": "Tout est en ordre et fonctionne correctement.\n",
             "schema": {
-              "type": "object",
-              "properties": {
-                "balanceErrorThresholdExceeded": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "balanceWarningThresholdExceeded": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "ethereumActive": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "persistenceActive": {
-                  "type": "boolean",
-                  "example": true
-                }
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Sonde"
               }
             }
           },
@@ -200,6 +185,23 @@ func init() {
         },
         "transactionhash": {
           "type": "string"
+        }
+      }
+    },
+    "Sonde": {
+      "type": "object",
+      "properties": {
+        "balanceErrorThresholdExceeded": {
+          "type": "boolean"
+        },
+        "balanceWarningThresholdExceeded": {
+          "type": "boolean"
+        },
+        "ethereumActive": {
+          "type": "boolean"
+        },
+        "persistenceActive": {
+          "type": "boolean"
         }
       }
     }
@@ -320,24 +322,9 @@ func init() {
           "200": {
             "description": "Tout est en ordre et fonctionne correctement.\n",
             "schema": {
-              "type": "object",
-              "properties": {
-                "balanceErrorThresholdExceeded": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "balanceWarningThresholdExceeded": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "ethereumActive": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "persistenceActive": {
-                  "type": "boolean",
-                  "example": true
-                }
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Sonde"
               }
             }
           },
@@ -388,6 +375,23 @@ func init() {
         },
         "transactionhash": {
           "type": "string"
+        }
+      }
+    },
+    "Sonde": {
+      "type": "object",
+      "properties": {
+        "balanceErrorThresholdExceeded": {
+          "type": "boolean"
+        },
+        "balanceWarningThresholdExceeded": {
+          "type": "boolean"
+        },
+        "ethereumActive": {
+          "type": "boolean"
+        },
+        "persistenceActive": {
+          "type": "boolean"
         }
       }
     }

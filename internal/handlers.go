@@ -3,14 +3,16 @@ package internal
 import (
 	"bytes"
 	"context"
+//	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"strings"
 	"time"
+	//"math/big"
 
-	models "github.com/Magicking/rc-ge-ch-pdf/models"
+models "github.com/Magicking/rc-ge-ch-pdf/models"
 	op "github.com/Magicking/rc-ge-ch-pdf/restapi/operations"
 	runtime "github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
@@ -93,24 +95,22 @@ func ListtimestampedHandler(ctx context.Context, params op.ListtimestampedParams
 	return op.NewListtimestampedOK().WithPayload(ret)
 }
 
-func MonitoringHandler(ctx context.Context, params op.MonitoringParams) (middleware.Responder){
+
+//func MonitoringHandler(ctx context.Context, params op.MonitoringParams, w http.ResponseWriter, r *http.Request) (middleware.Responder){
+func MonitoringHandler(ctx context.Context, params op.MonitoringParams) middleware.Responder {
 	fmt.Println("We are here")
-	//sonde := new(Sonde)
 	nodeOk := GetNodeSignal(ctx)
-	if !nodeOk {
-	//	sonde = {
-	//		ethereumActive: false
-	//	},
-		return op.NewMonitoringDefault(500)
+	persistence, err := GetDBTests()
+	if err != nil {
+		persistence = false
 	}
-//	GetEthereumBalance()
-	ethBal, errorThreshold, warningThreshold := GetEthereumBalance()
-
-	if ethBal < errorThreshold {
-
+	errorThreshold, warningThreshold := GetEthereumBalance()
+	var sondeResp []*models.Sonde
+	sondeResp_rcpt := models.Sonde{EthereumActive: nodeOk,
+		BalanceErrorThresholdExceeded: errorThreshold,
+		BalanceWarningThresholdExceeded: warningThreshold,
+		PersistenceActive: persistence,
 	}
-	//_sonde := Sonde{
-	//	ethereumActive: true,
-	//}
-	return op.NewMonitoringOK()
-}
+	sondeResp = append(sondeResp, &sondeResp_rcpt)
+	return op.NewMonitoringOK().WithPayload(sondeResp)
+	}

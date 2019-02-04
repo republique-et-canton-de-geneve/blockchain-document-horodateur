@@ -26,15 +26,15 @@ paths:
                 - application/octet-stream
                 - application/json
             parameters:
-              - name: hash
-                in: query
-                type: string
-                required: true
-                description: Le hash identifiant un fichier
-              - name: lang
-                in: query
-                type: string
-                description: Langue du reçu
+                - name: hash
+                  in: query
+                  type: string
+                  required: true
+                  description: Le hash identifiant un fichier
+                - name: lang
+                  in: query
+                  type: string
+                  description: Langue du reçu
             responses:
                 200:
                     description: |
@@ -51,45 +51,45 @@ paths:
             description: |
                 Supprimer les reçus de la base de donnée
             parameters:
-              - name: hashes
-                in: body
-                schema:
-                  type: array
-                  items:
-                      type: string
-                required: true
-                description: Liste des hash à supprimer
+                - name: hashes
+                  in: body
+                  schema:
+                      type: array
+                      items:
+                          type: string
+                  required: true
+                  description: Liste des hash à supprimer
             responses:
                 200:
                 default:
                     description: Internal error
                     schema:
                         $ref: '#/definitions/Error'
-#TODO put in an other services
-#        post:
-#            summary: Vérifie le reçu
-#           operationId: validatereceipt
-#           description: |
-#               Vérifie le reçu et le fichier associé
-#           consumes:
-#               - application/octet-stream
-#               - application/json
-#           parameters:
-#             - name: hash
-#               in: query
-#               type: string
-#               required: true
-#               description: Le hash associé au fichier soumi
-#           responses:
-#               200:
-#                   description: |
-#                       Fichier(s) de reçu de l'horodatage certifié blockchain
-#                   schema:
-#                       type: file
-#               default:
-#                   description: Internal error
-#                   schema:
-#                       $ref: '#/definitions/Error'
+    #TODO put in an other services
+    #        post:
+    #            summary: Vérifie le reçu
+    #           operationId: validatereceipt
+    #           description: |
+    #               Vérifie le reçu et le fichier associé
+    #           consumes:
+    #               - application/octet-stream
+    #               - application/json
+    #           parameters:
+    #             - name: hash
+    #               in: query
+    #               type: string
+    #               required: true
+    #               description: Le hash associé au fichier soumi
+    #           responses:
+    #               200:
+    #                   description: |
+    #                       Fichier(s) de reçu de l'horodatage certifié blockchain
+    #                   schema:
+    #                       type: file
+    #               default:
+    #                   description: Internal error
+    #                   schema:
+    #                       $ref: '#/definitions/Error'
     /horodatage:
         get:
             summary: Liste les fichiers horodatés
@@ -117,22 +117,11 @@ paths:
             responses:
                 200:
                     description: |
-                      Tout est en ordre et fonctionne correctement.
+                        Tout est en ordre et fonctionne correctement.
                     schema:
-                      type: object
-                      properties:
-                        ethereumActive:
-                            type: boolean
-                            example: true
-                        balanceErrorThresholdExceeded:
-                            type: boolean
-                            example: true
-                        balanceWarningThresholdExceeded:
-                            type: boolean
-                            example: true
-                        persistenceActive:
-                            type: boolean
-                            example: true
+                        type: array
+                        items:
+                            $ref: '#/definitions/Sonde'
                 default:
                     description: Internal error
                     schema:
@@ -168,6 +157,17 @@ paths:
 #                   schema:
 #                       $ref: '#/definitions/Error'
 definitions:
+    Sonde:
+        type: object
+        properties:
+            ethereumActive:
+                type: boolean
+            balanceErrorThresholdExceeded:
+                type: boolean
+            balanceWarningThresholdExceeded:
+                type: boolean
+            persistenceActive:
+                type: boolean
     ReceiptFile:
         type: object
         properties:

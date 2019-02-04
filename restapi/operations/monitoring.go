@@ -9,8 +9,6 @@ import (
 	"net/http"
 
 	middleware "github.com/go-openapi/runtime/middleware"
-	strfmt "github.com/go-openapi/strfmt"
-	swag "github.com/go-openapi/swag"
 )
 
 // MonitoringHandlerFunc turns a function with the right signature into a monitoring handler
@@ -60,44 +58,4 @@ func (o *Monitoring) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
-}
-
-// MonitoringOKBody monitoring o k body
-// swagger:model MonitoringOKBody
-type MonitoringOKBody struct {
-
-	// balance error threshold exceeded
-	BalanceErrorThresholdExceeded bool `json:"balanceErrorThresholdExceeded,omitempty"`
-
-	// balance warning threshold exceeded
-	BalanceWarningThresholdExceeded bool `json:"balanceWarningThresholdExceeded,omitempty"`
-
-	// ethereum active
-	EthereumActive bool `json:"ethereumActive,omitempty"`
-
-	// persistence active
-	PersistenceActive bool `json:"persistenceActive,omitempty"`
-}
-
-// Validate validates this monitoring o k body
-func (o *MonitoringOKBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *MonitoringOKBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *MonitoringOKBody) UnmarshalBinary(b []byte) error {
-	var res MonitoringOKBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
 }

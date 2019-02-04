@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	"math/big"
 	"net/http"
 
 	errors "github.com/go-openapi/errors"
@@ -23,8 +24,8 @@ var ethopts struct {
 	WsURI      string `long:"ws-uri" env:"WS_URI" description:"Ethereum WS URI (e.g: ws://HOST:8546)"`
 	PrivateKey string `long:"pkey" env:"PRIVATE_KEY" description:"hex encoded private key"`
 	LockedAddress string `long:"locked-addr" env:"LOCKED_ADDR" description:"Ethereum address of the sole verifier (anchor emitter)"`
-	ErrorThreshold int `long:"error-threshold" env:"ERROR_THRESHOLD" description:""`
-	WarningThreshold int `long:"warning-threshold" env:"WARNING_THRESHOLD" description:""`
+	ErrorThreshold big.Float`long:"error-threshold" env:"ERROR_THRESHOLD" description:""`
+	WarningThreshold big.Float `long:"warning-threshold" env:"WARNING_THRESHOLD" description:""`
 }
 
 var serviceopts struct {
@@ -64,6 +65,8 @@ func configureAPI(api *operations.RCGHorodatageAPI) http.Handler {
 
 	api.BinProducer = runtime.ByteStreamProducer()
 
+	//w := new(http.ResponseWriter)
+	//r := new(http.Request)
 	api.GetreceiptHandler = operations.GetreceiptHandlerFunc(func(params operations.GetreceiptParams) middleware.Responder {
 		return internal.GetreceiptHandler(ctx, params)
 	})
@@ -74,6 +77,7 @@ func configureAPI(api *operations.RCGHorodatageAPI) http.Handler {
 		return internal.ListtimestampedHandler(ctx, params)
 	})
 	api.MonitoringHandler = operations.MonitoringHandlerFunc(func(params operations.MonitoringParams) middleware.Responder {
+//		return internal.MonitoringHandler(ctx, params, *w, r)
 		return internal.MonitoringHandler(ctx, params)
 	})
 	api.ServerShutdown = func() {}

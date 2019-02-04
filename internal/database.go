@@ -5,37 +5,42 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/Magicking/rc-ge-ch-pdf/merkle"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"log"
 	"math"
 	"math/big"
 	"time"
-	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/ethereum/go-ethereum/common"
 )
 
 type Receipt struct {
 	gorm.Model
-	TargetHash      string
-	TransactionHash string
-	Filename        string
-	Date            time.Time
-	JSONData        []byte
+	TargetHash      					string
+	TransactionHash 					string
+	Filename        					string
+	Date            					time.Time
+	JSONData        					[]byte
 }
 
 type Sonde struct {
 	ethereumActive						bool
-	//balanceErrorThresholdExceeded		bool
-	//balanceWarningThresholdExceeded 	bool
-	//persistenceActive					bool
+	balanceErrorThresholdExceeded		bool
+	balanceWarningThresholdExceeded 	bool
+	persistenceActive					bool
 }
 
-var NodeAddress string
-var LockedAddress string
+type TestStruct struct {
+	Test 								string
+}
+
+var NodeAddress 						string
+var LockedAddress						string
 //Maybe error is warning and vice-versa
-var ErrorThreshold int
-var WarningThreshold int
+var ErrorThreshold						*big.Float
+var WarningThreshold					*big.Float
+var DB									*gorm.DB
 
 func GetNodeSignal(ctx context.Context) (bool){
 	fmt.Println(NodeAddress, " URI")
@@ -47,7 +52,31 @@ func GetNodeSignal(ctx context.Context) (bool){
 	return ok
 }
 
-func GetEthereumBalance() (*big.Float, int, int) {
+func GetDBTests() (bool, error) {
+	var err error
+
+	if err = DB.AutoMigrate(&TestStruct{}).Error; err != nil {
+		DB.Close()
+		return false, err
+	}
+	if err = DB.Create(&TestStruct{Test: "Database test"}).Error; err != nil {
+		fmt.Println(" Du mal à create dans la DB")
+		return false, err
+	}
+
+	var testStruct TestStruct
+	//Testing with a real entry
+	if err = DB.Where("test= ?", "Database test").First(&testStruct).Error; err != nil {
+		return false, err
+	}
+	//Testing with a fake entry
+	if err = DB.Where("test= ?", "Database tset").First(&testStruct).Error; err != nil {
+		return true, nil
+	}
+	return true, nil
+}
+
+func GetEthereumBalance() (bool, bool) {
 	client, err := ethclient.Dial(NodeAddress)
 	account := common.HexToAddress(LockedAddress)
 	balance, err := client.BalanceAt(context.Background(), account, nil)
@@ -57,8 +86,19 @@ func GetEthereumBalance() (*big.Float, int, int) {
 	fbalance := new(big.Float)
 	fbalance.SetString(balance.String())
 	ethValue := new(big.Float).Quo(fbalance, big.NewFloat(math.Pow10(18)))
-	fmt.Println(ethValue)
-	return ethValue, ErrorThreshold, WarningThreshold
+//	resp, err := http.Post("http://example.com/upload", "image/jpeg", &buf)
+	var errBool, warnBool bool
+	if (ethValue.Cmp(ErrorThreshold) == -1) {
+		errBool = false
+	} else {
+		errBool = true
+	}
+	if (ethValue.Cmp(WarningThreshold) == -1) {
+		warnBool = false
+	} else {
+		warnBool = true
+	}
+	return errBool, warnBool
 }
 
 func InsertReceipt(ctx context.Context, now time.Time, filename string, rcpt *merkle.Chainpoint) error {
@@ -135,14 +175,14 @@ func GetAllReceipts(ctx context.Context) ([]Receipt, error) {
 	return receipts, nil
 }
 
-func InitDatabase(dbDsn string, nodeAddress string, lockedAddress string, errorThreshold int, warningThreshold int) (*gorm.DB, error) {
+func InitDatabase(dbDsn string, nodeAddress string, lockedAddress string, errorThreshold big.Float, warningThreshold big.Float) (*gorm.DB, error) {
 	var err error
 	var db *gorm.DB
 
 	NodeAddress = nodeAddress
 	LockedAddress = lockedAddress
-	ErrorThreshold = errorThreshold
-	WarningThreshold = warningThreshold
+	ErrorThreshold = &errorThreshold
+	WarningThreshold = &warningThreshold
 
 	for i := 1; i < 10; i++ {
 		db, err = gorm.Open("postgres", dbDsn)
@@ -161,5 +201,6 @@ func InitDatabase(dbDsn string, nodeAddress string, lockedAddress string, errorT
 		db.Close()
 		return nil, err
 	}
+	DB = db
 	return db, nil
 }

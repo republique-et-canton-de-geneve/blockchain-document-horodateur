@@ -3,6 +3,7 @@ package internal
 import (
 	"context"
 	"log"
+	"math/big"
 
 	blktk "github.com/Magicking/gethitihteg"
 	"github.com/jinzhu/gorm"
@@ -40,7 +41,7 @@ func BLKFromContext(ctx context.Context) (*blktk.BlockchainContext, bool) {
 	return blk, ok
 }
 
-func NewDBToContext(ctx context.Context, dbDsn string, nodeAddress string, lockedAddress string, errorThreshold int, warningThreshold int) context.Context {
+func NewDBToContext(ctx context.Context, dbDsn string, nodeAddress string, lockedAddress string, errorThreshold big.Float, warningThreshold big.Float) context.Context {
 	db, err := InitDatabase(dbDsn, nodeAddress, lockedAddress, errorThreshold, warningThreshold)
 	if err != nil {
 		log.Fatalf("Could not initialize database: %v", err)

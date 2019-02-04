@@ -26,7 +26,7 @@ type MonitoringOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *MonitoringOKBody `json:"body,omitempty"`
+	Payload []*models.Sonde `json:"body,omitempty"`
 }
 
 // NewMonitoringOK creates MonitoringOK with default headers values
@@ -36,13 +36,13 @@ func NewMonitoringOK() *MonitoringOK {
 }
 
 // WithPayload adds the payload to the monitoring o k response
-func (o *MonitoringOK) WithPayload(payload *MonitoringOKBody) *MonitoringOK {
+func (o *MonitoringOK) WithPayload(payload []*models.Sonde) *MonitoringOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the monitoring o k response
-func (o *MonitoringOK) SetPayload(payload *MonitoringOKBody) {
+func (o *MonitoringOK) SetPayload(payload []*models.Sonde) {
 	o.Payload = payload
 }
 
@@ -50,12 +50,15 @@ func (o *MonitoringOK) SetPayload(payload *MonitoringOKBody) {
 func (o *MonitoringOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(200)
-	if o.Payload != nil {
-		payload := o.Payload
-		if err := producer.Produce(rw, payload); err != nil {
-			panic(err) // let the recovery middleware deal with this
-		}
+	payload := o.Payload
+	if payload == nil {
+		payload = make([]*models.Sonde, 0, 50)
 	}
+
+	if err := producer.Produce(rw, payload); err != nil {
+		panic(err) // let the recovery middleware deal with this
+	}
+
 }
 
 /*MonitoringDefault Internal error
