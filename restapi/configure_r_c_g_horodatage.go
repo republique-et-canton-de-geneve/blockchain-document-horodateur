@@ -65,8 +65,6 @@ func configureAPI(api *operations.RCGHorodatageAPI) http.Handler {
 
 	api.BinProducer = runtime.ByteStreamProducer()
 
-	//w := new(http.ResponseWriter)
-	//r := new(http.Request)
 	api.GetreceiptHandler = operations.GetreceiptHandlerFunc(func(params operations.GetreceiptParams) middleware.Responder {
 		return internal.GetreceiptHandler(ctx, params)
 	})
@@ -77,7 +75,6 @@ func configureAPI(api *operations.RCGHorodatageAPI) http.Handler {
 		return internal.ListtimestampedHandler(ctx, params)
 	})
 	api.MonitoringHandler = operations.MonitoringHandlerFunc(func(params operations.MonitoringParams) middleware.Responder {
-//		return internal.MonitoringHandler(ctx, params, *w, r)
 		return internal.MonitoringHandler(ctx, params)
 	})
 	api.ServerShutdown = func() {}
