@@ -5,13 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/Magicking/rc-ge-ch-pdf/merkle"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"log"
-	"math"
-	"math/big"
 	"time"
 )
 
@@ -24,82 +20,7 @@ type Receipt struct {
 	JSONData        					[]byte
 }
 
-type Sonde struct {
-	ethereumActive						bool
-	balanceErrorThresholdExceeded		bool
-	balanceWarningThresholdExceeded 	bool
-	persistenceActive					bool
-}
-
-type TestStruct struct {
-	Test 								string
-}
-
-var NodeAddress 						string
-var LockedAddress						string
-//Maybe error is warning and vice-versa
-var ErrorThreshold						*big.Float
-var WarningThreshold					*big.Float
 var DB									*gorm.DB
-
-func GetNodeSignal(ctx context.Context) (bool){
-	fmt.Println(NodeAddress, " URI")
-	ctxt := NewCCToContext(ctx, NodeAddress)
-	_, ok := CCFromContext(ctxt)
-	if !ok {
-		log.Fatalf("Could not obtain ClientConnector from context\n")
-	}
-	return ok
-}
-
-func GetDBTests() (bool, error) {
-	var err error
-
-	if err = DB.AutoMigrate(&TestStruct{}).Error; err != nil {
-		DB.Close()
-		return false, err
-	}
-	if err = DB.Create(&TestStruct{Test: "Database test"}).Error; err != nil {
-		fmt.Println(" Du mal à create dans la DB")
-		return false, err
-	}
-
-	var testStruct TestStruct
-	//Testing with a real entry
-	if err = DB.Where("test= ?", "Database test").First(&testStruct).Error; err != nil {
-		return false, err
-	}
-	//Testing with a fake entry
-	if err = DB.Where("test= ?", "Database tset").First(&testStruct).Error; err != nil {
-		return true, nil
-	}
-	return true, nil
-}
-
-func GetEthereumBalance() (bool, bool) {
-	client, err := ethclient.Dial(NodeAddress)
-	account := common.HexToAddress(LockedAddress)
-	balance, err := client.BalanceAt(context.Background(), account, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fbalance := new(big.Float)
-	fbalance.SetString(balance.String())
-	ethValue := new(big.Float).Quo(fbalance, big.NewFloat(math.Pow10(18)))
-//	resp, err := http.Post("http://example.com/upload", "image/jpeg", &buf)
-	var errBool, warnBool bool
-	if (ethValue.Cmp(ErrorThreshold) == -1) {
-		errBool = false
-	} else {
-		errBool = true
-	}
-	if (ethValue.Cmp(WarningThreshold) == -1) {
-		warnBool = false
-	} else {
-		warnBool = true
-	}
-	return errBool, warnBool
-}
 
 func InsertReceipt(ctx context.Context, now time.Time, filename string, rcpt *merkle.Chainpoint) error {
 	jsonData, err := json.Marshal(rcpt)
@@ -175,14 +96,9 @@ func GetAllReceipts(ctx context.Context) ([]Receipt, error) {
 	return receipts, nil
 }
 
-func InitDatabase(dbDsn string, nodeAddress string, lockedAddress string, errorThreshold big.Float, warningThreshold big.Float) (*gorm.DB, error) {
+func InitDatabase(dbDsn string) (*gorm.DB, error) {
 	var err error
 	var db *gorm.DB
-
-	NodeAddress = nodeAddress
-	LockedAddress = lockedAddress
-	ErrorThreshold = &errorThreshold
-	WarningThreshold = &warningThreshold
 
 	for i := 1; i < 10; i++ {
 		db, err = gorm.Open("postgres", dbDsn)

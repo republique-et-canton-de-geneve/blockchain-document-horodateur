@@ -14,6 +14,7 @@ type key int
 var dbKey key = 0
 var blkKey key = 1
 var ethRpcKey key = 2
+var monitoringKey key = 3
 
 func NewCCToContext(ctx context.Context, wsURI string) context.Context {
 	cc, err := blktk.NewClientConnector(wsURI, 3)
@@ -41,8 +42,22 @@ func BLKFromContext(ctx context.Context) (*blktk.BlockchainContext, bool) {
 	return blk, ok
 }
 
-func NewDBToContext(ctx context.Context, dbDsn string, nodeAddress string, lockedAddress string, errorThreshold big.Float, warningThreshold big.Float) context.Context {
-	db, err := InitDatabase(dbDsn, nodeAddress, lockedAddress, errorThreshold, warningThreshold)
+func MonitoringFromContext(ctx context.Context) (MonitoringEnv, bool) {
+	mn, ok := ctx.Value(monitoringKey).(MonitoringEnv)
+	return mn, ok
+}
+
+func NewMonitoringToContext(ctx context.Context, nodeAddress string, lockedAddress string, errorThreshold big.Float, warningThreshold big.Float) context.Context {
+	mn := InitMonitoring(nodeAddress, lockedAddress, errorThreshold, warningThreshold)
+	if (MonitoringEnv{}) == mn {
+		log.Fatalf("Could not initialize monitoring cont: %v", mn)
+	}
+	return context.WithValue(ctx, monitoringKey, mn)
+}
+
+func NewDBToContext(ctx context.Context, dbDsn string) context.Context {
+	db, err := InitDatabase(dbDsn)
+	//InitMonitoring(nodeAddress, lockedAddress, errorThreshold, warningThreshold)
 	if err != nil {
 		log.Fatalf("Could not initialize database: %v", err)
 	}

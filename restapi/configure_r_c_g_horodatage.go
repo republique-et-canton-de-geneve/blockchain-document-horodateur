@@ -55,9 +55,10 @@ func configureAPI(api *operations.RCGHorodatageAPI) http.Handler {
 	//
 	// Example:
 	// s.api.Logger = log.Printf
-	ctx := internal.NewDBToContext(context.Background(), serviceopts.DbDSN, ethopts.WsURI, ethopts.LockedAddress, ethopts.ErrorThreshold, ethopts.WarningThreshold)
+	ctx := internal.NewDBToContext(context.Background(), serviceopts.DbDSN)
 	ctx = internal.NewCCToContext(ctx, ethopts.WsURI)
 	ctx = internal.NewBLKToContext(ctx, ethopts.WsURI, ethopts.PrivateKey)
+	ctx = internal.NewMonitoringToContext(context.Background(), ethopts.WsURI, ethopts.LockedAddress, ethopts.ErrorThreshold, ethopts.WarningThreshold)
 
 	api.JSONConsumer = runtime.JSONConsumer()
 
