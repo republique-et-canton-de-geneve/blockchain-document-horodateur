@@ -2,18 +2,18 @@ package restapi
 
 import (
 	"context"
+	//	"crypto/rsa"
 	"crypto/tls"
+	//	"crypto/x509"
 	"fmt"
+	"github.com/Genova/bcp-genova/blockchain-document-horodateur/internal"
+	"github.com/Genova/bcp-genova/blockchain-document-horodateur/restapi/operations"
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/swag"
 	"math/big"
 	"net/http"
-
-	errors "github.com/go-openapi/errors"
-	runtime "github.com/go-openapi/runtime"
-	middleware "github.com/go-openapi/runtime/middleware"
-	swag "github.com/go-openapi/swag"
-
-	internal "github.com/Magicking/rc-ge-ch-pdf/internal"
-	"github.com/Magicking/rc-ge-ch-pdf/restapi/operations"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
@@ -46,6 +46,40 @@ func configureFlags(api *operations.RCGHorodatageAPI) {
 	api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ethOpts, serviceOpts}
 	}
 
+//func configureSAML() {
+//	pblcKey, err := filepath.Abs("myservice.cert")
+//	pvtKey, err := filepath.Abs("myservice.key")
+//	fmt.Println(pblcKey, pvtKey)
+//	keyPair, err := tls.LoadX509KeyPair(pblcKey, pvtKey)
+//	fmt.Println(keyPair)
+//	if err != nil {
+//		panic(err) // TODO handle error
+//	}
+//	keyPair.Leaf, err = x509.ParseCertificate(keyPair.Certificate[0])
+//	if err != nil {
+//		panic(err) // TODO handle error
+//	}
+//	idpMetadataURL, err := url.Parse("http://ec2-18-184-234-216.eu-central-1.compute.amazonaws.com/ssorec.geneveid.ch_dgsi_blockchain.xml")
+//	if err != nil {
+//		panic(err) // TODO handle error
+//	}
+//	rootURL, err := url.Parse("http://127.0.0.1:8001/")
+//	if err != nil {
+//		panic(err) // TODO handle error
+//	}
+//	samlSP, _ := samlsp.New(samlsp.Options{
+//		URL:            *rootURL,
+//		Key:            keyPair.PrivateKey.(*rsa.PrivateKey),
+//		Certificate:    keyPair.Leaf,
+//		IDPMetadataURL: idpMetadataURL,
+//	})
+//	fmt.Println(samlSP)
+//}
+
+//func configureSAML(w http.ResponseWriter, r *http.Request) {
+//	fmt.Fprintf(w, "Hello, %s!", samlsp.Token(r.Context()).Attributes.Get("cn"))
+//}
+
 func configureAPI(api *operations.RCGHorodatageAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
@@ -70,7 +104,7 @@ func configureAPI(api *operations.RCGHorodatageAPI) http.Handler {
 		return internal.GetreceiptHandler(ctx, params)
 	})
 	api.DelreceiptsHandler = operations.DelreceiptsHandlerFunc(func(params operations.DelreceiptsParams) middleware.Responder {
-		return internal.DelreceiptsHandler(ctx, params)
+		return internal.DelreceiptsHandler(ctx	, params)
 	})
 	api.ListtimestampedHandler = operations.ListtimestampedHandlerFunc(func(params operations.ListtimestampedParams) middleware.Responder {
 		return internal.ListtimestampedHandler(ctx, params)
@@ -78,10 +112,15 @@ func configureAPI(api *operations.RCGHorodatageAPI) http.Handler {
 	api.MonitoringHandler = operations.MonitoringHandlerFunc(func(params operations.MonitoringParams) middleware.Responder {
 		return internal.MonitoringHandler(ctx, params)
 	})
+	api.ConfigureSAMLHandler = operations.ConfigureSAMLHandlerFunc(func(params operations.ConfigureSAMLParams) middleware.Responder {
+		return internal.ConfigureSAMLHandler(ctx, params)
+	})
+
 	api.ServerShutdown = func() {}
 
 	return setupGlobalMiddleware(ctx, api.Serve(setupMiddlewares))
 }
+
 
 // The TLS configuration before HTTPS server starts.
 func configureTLS(tlsConfig *tls.Config) {

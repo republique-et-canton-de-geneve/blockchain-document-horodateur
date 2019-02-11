@@ -24,8 +24,9 @@ import (
 	"github.com/go-openapi/swag"
 	flags "github.com/jessevdk/go-flags"
 	"golang.org/x/net/netutil"
+	"github.com/Genova/bcp-genova/blockchain-document-horodateur/restapi/operations"
 
-	"github.com/Magicking/rc-ge-ch-pdf/restapi/operations"
+//	"github.com/Magicking/rc-ge-ch-pdf/restapi/operations"
 )
 
 const (

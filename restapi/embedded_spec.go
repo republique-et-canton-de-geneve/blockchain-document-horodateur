@@ -123,6 +123,22 @@ func init() {
         }
       }
     },
+    "/saml": {
+      "get": {
+        "description": "null",
+        "summary": "null",
+        "operationId": "configureSAML",
+        "responses": {
+          "200": {},
+          "default": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/sonde": {
       "get": {
         "description": "Retourne quatres flag correspondant respectivement à la bonne connexion à un noeud Infura, la balance supérieure à 1 ETH, supérieure à 0,1 ETH et le bon fonctionnement d'une requête vers la base de données\n",
@@ -302,6 +318,22 @@ func init() {
             }
           }
         ],
+        "responses": {
+          "200": {},
+          "default": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/saml": {
+      "get": {
+        "description": "null",
+        "summary": "null",
+        "operationId": "configureSAML",
         "responses": {
           "200": {},
           "default": {

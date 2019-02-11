@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/Magicking/rc-ge-ch-pdf/merkle"
+	"github.com/Genova/bcp-genova/blockchain-document-horodateur/merkle"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"log"

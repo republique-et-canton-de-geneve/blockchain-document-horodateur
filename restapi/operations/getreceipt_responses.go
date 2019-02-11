@@ -11,7 +11,8 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	models "github.com/Magicking/rc-ge-ch-pdf/models"
+	models	"github.com/Genova/bcp-genova/blockchain-document-horodateur/models"
+//	models "github.com/Magicking/rc-ge-ch-pdf/models"
 )
 
 // GetreceiptOKCode is the HTTP code returned for type GetreceiptOK

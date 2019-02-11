@@ -9,8 +9,9 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/runtime"
+	models	"github.com/Genova/bcp-genova/blockchain-document-horodateur/models"
 
-	models "github.com/Magicking/rc-ge-ch-pdf/models"
+	//models "github.com/Magicking/rc-ge-ch-pdf/models"
 )
 
 // DelreceiptsOKCode is the HTTP code returned for type DelreceiptsOK

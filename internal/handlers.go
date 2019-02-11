@@ -12,12 +12,12 @@ import (
 	"time"
 	//"math/big"
 
-models "github.com/Magicking/rc-ge-ch-pdf/models"
-	op "github.com/Magicking/rc-ge-ch-pdf/restapi/operations"
+models "github.com/Genova/bcp-genova/blockchain-document-horodateur/models"
+	op "github.com/Genova/bcp-genova/blockchain-document-horodateur/restapi/operations"
 	runtime "github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
 
-	tmpl "github.com/Magicking/rc-ge-ch-pdf/template"
+	tmpl "github.com/Genova/bcp-genova/blockchain-document-horodateur/template"
 )
 
 func newOctetStream(r io.Reader, fn string) middleware.Responder {
@@ -114,3 +114,9 @@ func MonitoringHandler(ctx context.Context, params op.MonitoringParams) middlewa
 	sondeResp = append(sondeResp, &sondeResp_rcpt)
 	return op.NewMonitoringOK().WithPayload(sondeResp)
 	}
+
+func ConfigureSAMLHandler(ctx context.Context, params op.ConfigureSAMLParams) middleware.Responder {
+	configureSAML()
+	//samlSP.requireAccount()
+	return op.NewConfigureSAMLOK()
+}
