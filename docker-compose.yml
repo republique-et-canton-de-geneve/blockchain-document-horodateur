@@ -7,9 +7,8 @@ services:
       - PRIVATE_KEY=63007E20C822A425B0A7B0C9FF2E2AD54BE313DCE9BCEC6963412021F8F2D2D7
       - DB_DSN=host=postgres user=tsUhfmkMfY dbname=rcgehorodatage sslmode=disable password=lrwOuiz4gH
       - LOCKED_ADDR=0x3ab05401c0d9483dbeb108b741248bb8e82e323d
-        #Maybe error is warning and vice-versa
-      - ERROR_THRESHOLD=1
-      - WARNING_THRESHOLD=0.1
+      - ERROR_THRESHOLD=0.1
+      - WARNING_THRESHOLD=1
     links:
       - postgres
 
