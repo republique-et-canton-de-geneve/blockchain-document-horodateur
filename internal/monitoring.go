@@ -25,8 +25,8 @@ type TestStruct struct {
 type MonitoringEnv struct {
 	NodeAddress                        	string
 	LockedAddress                       string
-	ErrorThreshold                      *big.Float
-	WarningThreshold                    *big.Float
+	ErrorThreshold                      float64
+	WarningThreshold                    float64
 }
 
 var mn MonitoringEnv
@@ -68,6 +68,8 @@ func GetDBTests() (bool, error) {
 func GetEthereumBalance() (bool, bool) {
 	client, err := ethclient.Dial(mn.NodeAddress)
 	account := common.HexToAddress(mn.LockedAddress)
+	fmt.Println(mn.NodeAddress)
+	fmt.Println(mn.LockedAddress)
 	balance, err := client.BalanceAt(context.Background(), account, nil)
 	if err != nil {
 		log.Fatal(err)
@@ -75,13 +77,20 @@ func GetEthereumBalance() (bool, bool) {
 	fbalance := new(big.Float)
 	fbalance.SetString(balance.String())
 	ethValue := new(big.Float).Quo(fbalance, big.NewFloat(math.Pow10(18)))
+	errThre, warThre := big.NewFloat(mn.ErrorThreshold), big.NewFloat(mn.WarningThreshold)
+	fmt.Printf("%T\n", mn.ErrorThreshold)
 	var errBool, warnBool bool
-	if (ethValue.Cmp(mn.ErrorThreshold) == -1) {
+	fmt.Println(mn.ErrorThreshold, "MANGER")
+	fmt.Println(mn.WarningThreshold,"DU PAIN")
+	fmt.Println(ethValue, "SANS EAU")
+
+
+	if (ethValue.Cmp(errThre) == -1) {
 		errBool = false
 	} else {
 		errBool = true
 	}
-	if (ethValue.Cmp(mn.WarningThreshold) == -1) {
+	if (ethValue.Cmp(warThre) == -1) {
 		warnBool = false
 	} else {
 		warnBool = true
@@ -89,10 +98,10 @@ func GetEthereumBalance() (bool, bool) {
 	return errBool, warnBool
 }
 
-func InitMonitoring(nodeAddress string, lockedAddress string, errorThreshold big.Float, warningThreshold big.Float) MonitoringEnv {
+func InitMonitoring(nodeAddress string, lockedAddress string, errorThreshold float64, warningThreshold float64) MonitoringEnv {
 	mn = MonitoringEnv{NodeAddress: nodeAddress,
 		LockedAddress: lockedAddress,
-		ErrorThreshold: &errorThreshold,
-		WarningThreshold: &warningThreshold}
+		ErrorThreshold: errorThreshold,
+		WarningThreshold: warningThreshold}
 	return mn
 }

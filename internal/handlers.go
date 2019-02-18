@@ -3,21 +3,19 @@ package internal
 import (
 	"bytes"
 	"context"
-//	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"strings"
 	"time"
-	//"math/big"
 
-models "github.com/Genova/bcp-genova/blockchain-document-horodateur/models"
-	op "github.com/Genova/bcp-genova/blockchain-document-horodateur/restapi/operations"
+models "github.com/geneva_horodateur/models"
+	op "github.com/geneva_horodateur/restapi/operations"
 	runtime "github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
 
-	tmpl "github.com/Genova/bcp-genova/blockchain-document-horodateur/template"
+	tmpl "github.com/geneva_horodateur/template"
 )
 
 func newOctetStream(r io.Reader, fn string) middleware.Responder {
@@ -116,7 +114,7 @@ func MonitoringHandler(ctx context.Context, params op.MonitoringParams) middlewa
 	}
 
 func ConfigureSAMLHandler(ctx context.Context, params op.ConfigureSAMLParams) middleware.Responder {
-	configureSAML()
+	//configureSAML()
 	//samlSP.requireAccount()
 	return op.NewConfigureSAMLOK()
 }

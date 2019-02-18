@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	ethtk "github.com/Magicking/gethitihteg/ethereum"
-	"github.com/Genova/bcp-genova/blockchain-document-horodateur/merkle"
+	"github.com/geneva_horodateur/merkle"
 	"golang.org/x/crypto/sha3"
 	"io"
 	"log"
