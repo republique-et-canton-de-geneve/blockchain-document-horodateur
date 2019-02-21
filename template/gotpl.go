@@ -3,7 +3,7 @@ package template
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Magicking/rc-ge-ch-pdf/merkle"
+	"github.com/geneva_horodateur/merkle"
 	"github.com/satori/go.uuid"
 	"io/ioutil"
 	"os"
