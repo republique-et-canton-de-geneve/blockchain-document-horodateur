@@ -74,8 +74,6 @@ func GetDBTests() (bool, error) {
 func GetEthereumBalance() (bool, bool) {
 	client, err := ethclient.Dial(mn.NodeAddress)
 	account := common.HexToAddress(mn.LockedAddress)
-	fmt.Println(mn.NodeAddress)
-	fmt.Println(mn.LockedAddress)
 	balance, err := client.BalanceAt(context.Background(), account, nil)
 	if err != nil {
 		log.Fatal(err)
