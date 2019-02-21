@@ -1,9 +1,12 @@
-FROM golang
+FROM golang:alpine
 MAINTAINER Sylvain Laurent
 
-RUN apt-get update && apt-get -y install \
-      texlive texlive-xetex texlive-lang-french && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add texlive texlive-xetex
+RUN	apk add --no-cache  bash \
+    		gcc \
+    		musl-dev \
+    		openssl \
+    		go
 
 ENV GOBIN $GOPATH/bin
 ENV PROJECT_DIR github.com/geneva_horodateur/
