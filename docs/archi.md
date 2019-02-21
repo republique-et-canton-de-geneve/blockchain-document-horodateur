@@ -1,8 +1,8 @@
 +--------------------+   +--------------------+       +---------------------+
 | Container 1        |   | Container 2        |       |                     |
 | +---------------+  |   | +---------------+  |       |                     |
-| |               |  |   | |               |  |       |                     |
-| | Database      |  |   | | Software      |  |       |                     |
+| |               |  |   | |               |  |       | Reverse proxy       |
+| | theDatabase   |  |   | | | Software    |  |       |                     |
 | |  Private key  <--------+  Golang       +----------> Public Ethereum node|
 | |  Receipt      |  |   | |               |  |       |                     |
 | |               |  |   | |               |  |       |                     |

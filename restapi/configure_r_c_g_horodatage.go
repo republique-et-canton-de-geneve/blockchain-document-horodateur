@@ -3,7 +3,6 @@ package restapi
 import (
 	"context"
 	"crypto/tls"
-	"fmt"
 	"github.com/geneva_horodateur/internal"
 	"github.com/geneva_horodateur/restapi/operations"
 	"github.com/go-openapi/errors"
@@ -57,22 +56,9 @@ func configureAPI(api *operations.RCGHorodatageAPI) http.Handler {
 	ctx := internal.NewDBToContext(context.Background(), serviceopts.DbDSN)
 	ctx = internal.NewCCToContext(ctx, ethopts.WsURI)
 	ctx = internal.NewBLKToContext(ctx, ethopts.WsURI, ethopts.PrivateKey)
-
-
-	fmt.Println(ethopts.LockedAddress, "AH BON")
-	fmt.Println(ethopts.PrivateKey, "AH OK")
-	fmt.Println(ethopts.ErrorThreshold, "ICI")
-	fmt.Println(ethopts.WarningThreshold, "ET LA")
-	errThre, err := strconv.ParseFloat(ethopts.ErrorThreshold, 64)
-	warnThre, err := strconv.ParseFloat(ethopts.WarningThreshold, 64)
-
-	fmt.Println(errThre, "ICI", err)
-	fmt.Println(warnThre, "ET LA", err)
-
-
-	ctx = internal.NewMonitoringToContext(ctx, ethopts.WsURI, ethopts.LockedAddress, errThre, warnThre)
-
-
+	errThre, _ := strconv.ParseFloat(ethopts.ErrorThreshold, 64)
+	warnThre, _:= strconv.ParseFloat(ethopts.WarningThreshold, 64)
+	ctx = internal.NewMonitoringToContext(ctx, ethopts.WsURI, ethopts.LockedAddress, ethopts.PrivateKey, errThre, warnThre)
 
 	api.JSONConsumer = runtime.JSONConsumer()
 

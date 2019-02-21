@@ -96,7 +96,6 @@ func ListtimestampedHandler(ctx context.Context, params op.ListtimestampedParams
 
 //func MonitoringHandler(ctx context.Context, params op.MonitoringParams, w http.ResponseWriter, r *http.Request) (middleware.Responder){
 func MonitoringHandler(ctx context.Context, params op.MonitoringParams) middleware.Responder {
-	fmt.Println("We are here")
 	nodeOk := GetNodeSignal(ctx)
 	persistence, err := GetDBTests()
 	if err != nil {

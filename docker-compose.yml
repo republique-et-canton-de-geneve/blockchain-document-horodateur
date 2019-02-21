@@ -4,9 +4,9 @@ services:
     build: .
     environment:
       - WS_URI=https://rinkeby.infura.io/v3/afeacc980c634655875d915ed65cb0e4
-      - PRIVATE_KEY=8EA30029C608C3E1011A0B155A247C220F4303D12C74AF17EF45E55828E74FF4
+      - PRIVATE_KEY=18030537DBDD38D0764947D40BED98FC4D2A21AF82765A7DE7B13D2E4076773C
       - DB_DSN=host=postgres user=tsUhfmkMfY dbname=rcgehorodatage sslmode=disable password=lrwOuiz4gH
-      - LOCKED_ADDR=0xea9221f585309f9b076ee30d8d6af26090dced2f
+      - LOCKED_ADDR=0x533a245f03a1a46cacb933a3beef752fd8ff45c3
       - ERROR_THRESHOLD=0.1
       - WARNING_THRESHOLD=1
     links:

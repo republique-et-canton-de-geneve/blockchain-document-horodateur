@@ -2,7 +2,6 @@ package internal
 
 import (
 	"context"
-	"fmt"
 	"log"
 	//"math/big"
 
@@ -48,10 +47,8 @@ func MonitoringFromContext(ctx context.Context) (MonitoringEnv, bool) {
 	return mn, ok
 }
 
-func NewMonitoringToContext(ctx context.Context, nodeAddress string, lockedAddress string, errorThreshold float64, warningThreshold float64) context.Context {
-	fmt.Println(errorThreshold, " AZERTY")
-	fmt.Println(warningThreshold, " QWERTY")
-	mn := InitMonitoring(nodeAddress, lockedAddress, errorThreshold, warningThreshold)
+func NewMonitoringToContext(ctx context.Context, nodeAddress string, lockedAddress string, privateKey string, errorThreshold float64, warningThreshold float64) context.Context {
+	mn := InitMonitoring(nodeAddress, lockedAddress, privateKey, errorThreshold, warningThreshold)
 	if (MonitoringEnv{}) == mn {
 		log.Fatalf("Could not initialize monitoring cont: %v", mn)
 	}

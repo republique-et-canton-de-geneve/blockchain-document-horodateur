@@ -25,6 +25,7 @@ type TestStruct struct {
 type MonitoringEnv struct {
 	NodeAddress                        	string
 	LockedAddress                       string
+	PrivateKey							string
 	ErrorThreshold                      float64
 	WarningThreshold                    float64
 }
@@ -32,13 +33,18 @@ type MonitoringEnv struct {
 var mn MonitoringEnv
 
 func GetNodeSignal(ctx context.Context) (bool){
-	fmt.Println(mn.NodeAddress, " URI")
-	ctxt := NewCCToContext(ctx, mn.NodeAddress)
-	_, ok := CCFromContext(ctxt)
+	blkCtx, ok := BLKFromContext(ctx)
 	if !ok {
-		log.Fatalf("Could not obtain ClientConnector from context\n")
+		log.Println("Could not obtain ClientConnector from context\n")
+		return false
 	}
-	return ok
+	// test connexion
+	i, err := blkCtx.NC.SuggestGasPrice(ctx)
+	if err != nil {
+		return false
+	}
+	log.Println(i)
+	return true
 }
 
 func GetDBTests() (bool, error) {
@@ -49,7 +55,7 @@ func GetDBTests() (bool, error) {
 		return false, err
 	}
 	if err = DB.Create(&TestStruct{Test: "Database test"}).Error; err != nil {
-		fmt.Println(" Du mal à create dans la DB")
+		fmt.Println(" Having troubles creating in the Database")
 		return false, err
 	}
 
@@ -78,12 +84,7 @@ func GetEthereumBalance() (bool, bool) {
 	fbalance.SetString(balance.String())
 	ethValue := new(big.Float).Quo(fbalance, big.NewFloat(math.Pow10(18)))
 	errThre, warThre := big.NewFloat(mn.ErrorThreshold), big.NewFloat(mn.WarningThreshold)
-	fmt.Printf("%T\n", mn.ErrorThreshold)
 	var errBool, warnBool bool
-	fmt.Println(mn.ErrorThreshold, "MANGER")
-	fmt.Println(mn.WarningThreshold,"DU PAIN")
-	fmt.Println(ethValue, "SANS EAU")
-
 
 	if (ethValue.Cmp(errThre) == -1) {
 		errBool = false
@@ -98,9 +99,10 @@ func GetEthereumBalance() (bool, bool) {
 	return errBool, warnBool
 }
 
-func InitMonitoring(nodeAddress string, lockedAddress string, errorThreshold float64, warningThreshold float64) MonitoringEnv {
+func InitMonitoring(nodeAddress string, lockedAddress string, privateKey string, errorThreshold float64, warningThreshold float64) MonitoringEnv {
 	mn = MonitoringEnv{NodeAddress: nodeAddress,
 		LockedAddress: lockedAddress,
+		PrivateKey: privateKey,
 		ErrorThreshold: errorThreshold,
 		WarningThreshold: warningThreshold}
 	return mn

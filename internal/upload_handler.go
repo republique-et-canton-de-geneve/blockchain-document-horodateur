@@ -98,8 +98,6 @@ func UploadHandler(ctx context.Context, prefix string, handler http.Handler) htt
 			v.Anchors = []merkle.AnchorPoint{merkle.AnchorPoint{SourceID: txhash, Type: "ETHData"}}
 			InsertReceipt(ctx, now, files[i].Filename, &v)
 		}
-		fmt.Println(merkleRoot)
-		fmt.Println(receipts)
 	}
 
 	return http.HandlerFunc(middle)
