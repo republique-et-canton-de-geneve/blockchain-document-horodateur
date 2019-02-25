@@ -2,8 +2,8 @@ FROM golang
 MAINTAINER Sylvain Laurent
 
 RUN apt-get update && apt-get -y install \
-      texlive texlive-xetex texlive-lang-french && \
-    rm -rf /var/lib/apt/lists/*
+        texlive texlive-xetex texlive-lang-french && \
+        rm -rf /var/lib/apt/lists/*
 
 ENV GOBIN $GOPATH/bin
 ENV PROJECT_DIR github.com/Genova/bcp-genova/blockchain-document-horodateur
