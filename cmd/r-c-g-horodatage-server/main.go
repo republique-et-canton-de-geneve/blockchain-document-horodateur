@@ -5,8 +5,8 @@ package main
 import (
 	"log"
 	"os"
-	"github.com/Genova/bcp-genova/blockchain-document-horodateur/restapi"
-	"github.com/Genova/bcp-genova/blockchain-document-horodateur/restapi/operations"
+	"github.com/geneva_horodateur/restapi"
+	"github.com/geneva_horodateur/restapi/operations"
 	loads "github.com/go-openapi/loads"
 	flags "github.com/jessevdk/go-flags"
 )

@@ -16,16 +16,16 @@ import (
 type Sonde struct {
 
 	// balance error threshold exceeded
-	BalanceErrorThresholdExceeded bool `json:"balanceErrorThresholdExceeded,omitempty"`
+	BalanceErrorThresholdExceeded bool `json:"balanceErrorThresholdExceeded"`
 
 	// balance warning threshold exceeded
-	BalanceWarningThresholdExceeded bool `json:"balanceWarningThresholdExceeded,omitempty"`
+	BalanceWarningThresholdExceeded bool `json:"balanceWarningThresholdExceeded"`
 
 	// ethereum active
-	EthereumActive bool `json:"ethereumActive,omitempty"`
+	EthereumActive bool `json:"ethereumActive"`
 
 	// persistence active
-	PersistenceActive bool `json:"persistenceActive,omitempty"`
+	PersistenceActive bool `json:"persistenceActive"`
 }
 
 // Validate validates this sonde

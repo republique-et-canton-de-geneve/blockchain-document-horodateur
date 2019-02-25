@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	ethtk "github.com/Magicking/gethitihteg/ethereum"
-	"github.com/Genova/bcp-genova/blockchain-document-horodateur/merkle"
+	"github.com/geneva_horodateur/merkle"
 	"golang.org/x/crypto/sha3"
 	"io"
 	"log"
@@ -98,8 +98,6 @@ func UploadHandler(ctx context.Context, prefix string, handler http.Handler) htt
 			v.Anchors = []merkle.AnchorPoint{merkle.AnchorPoint{SourceID: txhash, Type: "ETHData"}}
 			InsertReceipt(ctx, now, files[i].Filename, &v)
 		}
-		fmt.Println(merkleRoot)
-		fmt.Println(receipts)
 	}
 
 	return http.HandlerFunc(middle)

@@ -2,17 +2,16 @@ package restapi
 
 import (
 	"context"
-	//	"crypto/rsa"
 	"crypto/tls"
-	//	"crypto/x509"
-	"fmt"
-	"github.com/Genova/bcp-genova/blockchain-document-horodateur/internal"
-	"github.com/Genova/bcp-genova/blockchain-document-horodateur/restapi/operations"
+	"github.com/geneva_horodateur/internal"
+	"github.com/geneva_horodateur/restapi/operations"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/swag"
-	"math/big"
+	"strconv"
+
+	//	"math/big"
 	"net/http"
 )
 
@@ -24,8 +23,8 @@ var ethopts struct {
 	WsURI      string `long:"ws-uri" env:"WS_URI" description:"Ethereum WS URI (e.g: ws://HOST:8546)"`
 	PrivateKey string `long:"pkey" env:"PRIVATE_KEY" description:"hex encoded private key"`
 	LockedAddress string `long:"locked-addr" env:"LOCKED_ADDR" description:"Ethereum address of the sole verifier (anchor emitter)"`
-	ErrorThreshold big.Float`long:"error-threshold" env:"ERROR_THRESHOLD" description:""`
-	WarningThreshold big.Float `long:"warning-threshold" env:"WARNING_THRESHOLD" description:""`
+	ErrorThreshold string`long:"error-threshold" env:"ERROR_THRESHOLD" description:""`
+	WarningThreshold string `long:"warning-threshold" env:"WARNING_THRESHOLD" description:""`
 }
 
 var serviceopts struct {
@@ -46,44 +45,9 @@ func configureFlags(api *operations.RCGHorodatageAPI) {
 	api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ethOpts, serviceOpts}
 	}
 
-//func configureSAML() {
-//	pblcKey, err := filepath.Abs("myservice.cert")
-//	pvtKey, err := filepath.Abs("myservice.key")
-//	fmt.Println(pblcKey, pvtKey)
-//	keyPair, err := tls.LoadX509KeyPair(pblcKey, pvtKey)
-//	fmt.Println(keyPair)
-//	if err != nil {
-//		panic(err) // TODO handle error
-//	}
-//	keyPair.Leaf, err = x509.ParseCertificate(keyPair.Certificate[0])
-//	if err != nil {
-//		panic(err) // TODO handle error
-//	}
-//	idpMetadataURL, err := url.Parse("http://ec2-18-184-234-216.eu-central-1.compute.amazonaws.com/ssorec.geneveid.ch_dgsi_blockchain.xml")
-//	if err != nil {
-//		panic(err) // TODO handle error
-//	}
-//	rootURL, err := url.Parse("http://127.0.0.1:8001/")
-//	if err != nil {
-//		panic(err) // TODO handle error
-//	}
-//	samlSP, _ := samlsp.New(samlsp.Options{
-//		URL:            *rootURL,
-//		Key:            keyPair.PrivateKey.(*rsa.PrivateKey),
-//		Certificate:    keyPair.Leaf,
-//		IDPMetadataURL: idpMetadataURL,
-//	})
-//	fmt.Println(samlSP)
-//}
-
-//func configureSAML(w http.ResponseWriter, r *http.Request) {
-//	fmt.Fprintf(w, "Hello, %s!", samlsp.Token(r.Context()).Attributes.Get("cn"))
-//}
-
 func configureAPI(api *operations.RCGHorodatageAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
-	fmt.Println(ethopts.LockedAddress)
 	// Set your custom logger if needed. Default one is log.Printf
 	// Expected interface func(string, ...interface{})
 	//
@@ -92,7 +56,9 @@ func configureAPI(api *operations.RCGHorodatageAPI) http.Handler {
 	ctx := internal.NewDBToContext(context.Background(), serviceopts.DbDSN)
 	ctx = internal.NewCCToContext(ctx, ethopts.WsURI)
 	ctx = internal.NewBLKToContext(ctx, ethopts.WsURI, ethopts.PrivateKey)
-	ctx = internal.NewMonitoringToContext(ctx, ethopts.WsURI, ethopts.LockedAddress, ethopts.ErrorThreshold, ethopts.WarningThreshold)
+	errThre, _ := strconv.ParseFloat(ethopts.ErrorThreshold, 64)
+	warnThre, _:= strconv.ParseFloat(ethopts.WarningThreshold, 64)
+	ctx = internal.NewMonitoringToContext(ctx, ethopts.WsURI, ethopts.LockedAddress, ethopts.PrivateKey, errThre, warnThre)
 
 	api.JSONConsumer = runtime.JSONConsumer()
 

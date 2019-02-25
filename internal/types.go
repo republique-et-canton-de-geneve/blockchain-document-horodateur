@@ -3,7 +3,7 @@ package internal
 import (
 	"context"
 	"log"
-	"math/big"
+	//"math/big"
 
 	blktk "github.com/Magicking/gethitihteg"
 	"github.com/jinzhu/gorm"
@@ -47,8 +47,8 @@ func MonitoringFromContext(ctx context.Context) (MonitoringEnv, bool) {
 	return mn, ok
 }
 
-func NewMonitoringToContext(ctx context.Context, nodeAddress string, lockedAddress string, errorThreshold big.Float, warningThreshold big.Float) context.Context {
-	mn := InitMonitoring(nodeAddress, lockedAddress, errorThreshold, warningThreshold)
+func NewMonitoringToContext(ctx context.Context, nodeAddress string, lockedAddress string, privateKey string, errorThreshold float64, warningThreshold float64) context.Context {
+	mn := InitMonitoring(nodeAddress, lockedAddress, privateKey, errorThreshold, warningThreshold)
 	if (MonitoringEnv{}) == mn {
 		log.Fatalf("Could not initialize monitoring cont: %v", mn)
 	}
@@ -57,7 +57,6 @@ func NewMonitoringToContext(ctx context.Context, nodeAddress string, lockedAddre
 
 func NewDBToContext(ctx context.Context, dbDsn string) context.Context {
 	db, err := InitDatabase(dbDsn)
-	//InitMonitoring(nodeAddress, lockedAddress, errorThreshold, warningThreshold)
 	if err != nil {
 		log.Fatalf("Could not initialize database: %v", err)
 	}
