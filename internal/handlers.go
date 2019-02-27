@@ -15,7 +15,7 @@ models "github.com/geneva_horodateur/models"
 	runtime "github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
 
-	tmpl "github.com/geneva_horodateur/template"
+	"github.com/geneva_horodateur/template"
 )
 
 func newOctetStream(r io.Reader, fn string) middleware.Responder {
@@ -52,7 +52,8 @@ func GetreceiptHandler(ctx context.Context, params op.GetreceiptParams) middlewa
 		log.Printf(err_str)
 		return op.NewGetreceiptDefault(500).WithPayload(&models.Error{Message: &err_str})
 	}
-	rcptPdf, err := tmpl.MakeTemplate(rcpt.JSONData, lang, time.Now())
+
+	rcptPdf, err := template.MakeTemplate(rcpt.JSONData, lang, time.Now())
 	if err != nil {
 		err_str := fmt.Sprintf("Failed to call %s: %v", "MakeTemplate", err)
 		log.Printf(err_str)

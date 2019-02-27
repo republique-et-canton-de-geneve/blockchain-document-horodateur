@@ -23,6 +23,7 @@ func main() {
 
 	api := operations.NewRCGHorodatageAPI(swaggerSpec)
 	server := restapi.NewServer(api)
+
 	defer server.Shutdown()
 
 	parser := flags.NewParser(server, flags.Default)

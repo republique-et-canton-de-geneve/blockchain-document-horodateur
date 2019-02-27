@@ -1,6 +1,6 @@
 #!/bin/sh
 
-TEMPLATE_DIR=/go/src/${PROJECT_DIR}/template/latex
+TEMPLATE_DIR=${PROJECT_DIR}/template/latex
 TMP_DIR=`mktemp -d`
 
 clean()
@@ -9,7 +9,6 @@ clean()
 }
 
 trap clean EXIT
-
 cp "${TEMPLATE_DIR}/beamerposter.sty" "${TMP_DIR}"
 cp "${TEMPLATE_DIR}/beamerthemeruhuisstijlposter.cls" "${TMP_DIR}"
 cp "${TEMPLATE_DIR}/logo.png" "${TMP_DIR}"

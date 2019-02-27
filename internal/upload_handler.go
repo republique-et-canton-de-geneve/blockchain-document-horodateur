@@ -23,6 +23,7 @@ func sendData(ctx context.Context, data []byte) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("ethtk.NewAnchor: %v", err)
 	}
+
 	tx, err = blkCtx.AO.Sign(tx)
 	if err != nil {
 		return "", fmt.Errorf("blkCtx.AO.Sign: %v", err)
@@ -31,6 +32,7 @@ func sendData(ctx context.Context, data []byte) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("blkCtx.NC.SendTransaction: %v", err)
 	}
+
 	hashHex := tx.Hash().Hex()
 	if strings.HasPrefix(hashHex, "0x") {
 		hashHex = hashHex[2:]
