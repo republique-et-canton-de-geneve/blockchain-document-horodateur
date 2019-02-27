@@ -11,15 +11,15 @@ import (
 	golangswaggerpaths "path"
 )
 
-// DelreceiptsURL generates an URL for the delreceipts operation
-type DelreceiptsURL struct {
+// MonitoringURL generates an URL for the monitoring operation
+type MonitoringURL struct {
 	_basePath string
 }
 
 // WithBasePath sets the base path for this url builder, only required when it's different from the
 // base path specified in the swagger spec.
 // When the value of the base path is an empty string
-func (o *DelreceiptsURL) WithBasePath(bp string) *DelreceiptsURL {
+func (o *MonitoringURL) WithBasePath(bp string) *MonitoringURL {
 	o.SetBasePath(bp)
 	return o
 }
@@ -27,15 +27,15 @@ func (o *DelreceiptsURL) WithBasePath(bp string) *DelreceiptsURL {
 // SetBasePath sets the base path for this url builder, only required when it's different from the
 // base path specified in the swagger spec.
 // When the value of the base path is an empty string
-func (o *DelreceiptsURL) SetBasePath(bp string) {
+func (o *MonitoringURL) SetBasePath(bp string) {
 	o._basePath = bp
 }
 
 // Build a url path and query string
-func (o *DelreceiptsURL) Build() (*url.URL, error) {
+func (o *MonitoringURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/recu"
+	var _path = "/sonde"
 
 	_basePath := o._basePath
 	_result.Path = golangswaggerpaths.Join(_basePath, _path)
@@ -44,7 +44,7 @@ func (o *DelreceiptsURL) Build() (*url.URL, error) {
 }
 
 // Must is a helper function to panic when the url builder returns an error
-func (o *DelreceiptsURL) Must(u *url.URL, err error) *url.URL {
+func (o *MonitoringURL) Must(u *url.URL, err error) *url.URL {
 	if err != nil {
 		panic(err)
 	}
@@ -55,17 +55,17 @@ func (o *DelreceiptsURL) Must(u *url.URL, err error) *url.URL {
 }
 
 // String returns the string representation of the path with query string
-func (o *DelreceiptsURL) String() string {
+func (o *MonitoringURL) String() string {
 	return o.Must(o.Build()).String()
 }
 
 // BuildFull builds a full url with scheme, host, path and query string
-func (o *DelreceiptsURL) BuildFull(scheme, host string) (*url.URL, error) {
+func (o *MonitoringURL) BuildFull(scheme, host string) (*url.URL, error) {
 	if scheme == "" {
-		return nil, errors.New("scheme is required for a full url on DelreceiptsURL")
+		return nil, errors.New("scheme is required for a full url on MonitoringURL")
 	}
 	if host == "" {
-		return nil, errors.New("host is required for a full url on DelreceiptsURL")
+		return nil, errors.New("host is required for a full url on MonitoringURL")
 	}
 
 	base, err := o.Build()
@@ -79,6 +79,6 @@ func (o *DelreceiptsURL) BuildFull(scheme, host string) (*url.URL, error) {
 }
 
 // StringFull returns the string representation of a complete url
-func (o *DelreceiptsURL) StringFull(scheme, host string) string {
+func (o *MonitoringURL) StringFull(scheme, host string) string {
 	return o.Must(o.BuildFull(scheme, host)).String()
 }

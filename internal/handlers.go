@@ -10,12 +10,12 @@ import (
 	"strings"
 	"time"
 
-	models "github.com/Magicking/rc-ge-ch-pdf/models"
-	op "github.com/Magicking/rc-ge-ch-pdf/restapi/operations"
+models "github.com/geneva_horodateur/models"
+	op "github.com/geneva_horodateur/restapi/operations"
 	runtime "github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
 
-	tmpl "github.com/Magicking/rc-ge-ch-pdf/template"
+	"github.com/geneva_horodateur/template"
 )
 
 func newOctetStream(r io.Reader, fn string) middleware.Responder {
@@ -52,7 +52,8 @@ func GetreceiptHandler(ctx context.Context, params op.GetreceiptParams) middlewa
 		log.Printf(err_str)
 		return op.NewGetreceiptDefault(500).WithPayload(&models.Error{Message: &err_str})
 	}
-	rcptPdf, err := tmpl.MakeTemplate(rcpt.JSONData, lang, time.Now())
+
+	rcptPdf, err := template.MakeTemplate(rcpt.JSONData, lang, time.Now())
 	if err != nil {
 		err_str := fmt.Sprintf("Failed to call %s: %v", "MakeTemplate", err)
 		log.Printf(err_str)
@@ -91,4 +92,29 @@ func ListtimestampedHandler(ctx context.Context, params op.ListtimestampedParams
 		ret = append(ret, &ret_rcpt)
 	}
 	return op.NewListtimestampedOK().WithPayload(ret)
+}
+
+
+//func MonitoringHandler(ctx context.Context, params op.MonitoringParams, w http.ResponseWriter, r *http.Request) (middleware.Responder){
+func MonitoringHandler(ctx context.Context, params op.MonitoringParams) middleware.Responder {
+	nodeOk := GetNodeSignal(ctx)
+	persistence, err := GetDBTests()
+	if err != nil {
+		persistence = false
+	}
+	errorThreshold, warningThreshold := GetEthereumBalance()
+	var sondeResp []*models.Sonde
+	sondeResp_rcpt := models.Sonde{EthereumActive: nodeOk,
+		BalanceErrorThresholdExceeded: errorThreshold,
+		BalanceWarningThresholdExceeded: warningThreshold,
+		PersistenceActive: persistence,
+	}
+	sondeResp = append(sondeResp, &sondeResp_rcpt)
+	return op.NewMonitoringOK().WithPayload(sondeResp)
+	}
+
+func ConfigureSAMLHandler(ctx context.Context, params op.ConfigureSAMLParams) middleware.Responder {
+	//configureSAML()
+	//samlSP.requireAccount()
+	return op.NewConfigureSAMLOK()
 }

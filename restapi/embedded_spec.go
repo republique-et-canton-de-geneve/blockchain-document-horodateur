@@ -122,6 +122,46 @@ func init() {
           }
         }
       }
+    },
+    "/saml": {
+      "get": {
+        "description": "null",
+        "summary": "null",
+        "operationId": "configureSAML",
+        "responses": {
+          "200": {},
+          "default": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/sonde": {
+      "get": {
+        "description": "Retourne quatres flag correspondant respectivement à la bonne connexion à un noeud Infura, la balance supérieure à 1 ETH, supérieure à 0,1 ETH et le bon fonctionnement d'une requête vers la base de données\n",
+        "summary": "Retourne quatres flag correspondant respectivement à la bonne connexion à un noeud Infura, la balance supérieure à 1 ETH, supérieure à 0,1 ETH et le bon fonctionnement d'une requête vers la base de données.",
+        "operationId": "monitoring",
+        "responses": {
+          "200": {
+            "description": "Tout est en ordre et fonctionne correctement.\n",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Sonde"
+              }
+            }
+          },
+          "default": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -161,6 +201,23 @@ func init() {
         },
         "transactionhash": {
           "type": "string"
+        }
+      }
+    },
+    "Sonde": {
+      "type": "object",
+      "properties": {
+        "balanceErrorThresholdExceeded": {
+          "type": "boolean"
+        },
+        "balanceWarningThresholdExceeded": {
+          "type": "boolean"
+        },
+        "ethereumActive": {
+          "type": "boolean"
+        },
+        "persistenceActive": {
+          "type": "boolean"
         }
       }
     }
@@ -232,7 +289,7 @@ func init() {
           "200": {
             "description": "Fichier de reçu de l'horodatage certifié blockchain\n",
             "schema": {
-              "$ref": "#/definitions/getreceiptOKBody"
+              "type": "file"
             }
           },
           "default": {
@@ -263,6 +320,46 @@ func init() {
         ],
         "responses": {
           "200": {},
+          "default": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/saml": {
+      "get": {
+        "description": "null",
+        "summary": "null",
+        "operationId": "configureSAML",
+        "responses": {
+          "200": {},
+          "default": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/sonde": {
+      "get": {
+        "description": "Retourne quatres flag correspondant respectivement à la bonne connexion à un noeud Infura, la balance supérieure à 1 ETH, supérieure à 0,1 ETH et le bon fonctionnement d'une requête vers la base de données\n",
+        "summary": "Retourne quatres flag correspondant respectivement à la bonne connexion à un noeud Infura, la balance supérieure à 1 ETH, supérieure à 0,1 ETH et le bon fonctionnement d'une requête vers la base de données.",
+        "operationId": "monitoring",
+        "responses": {
+          "200": {
+            "description": "Tout est en ordre et fonctionne correctement.\n",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Sonde"
+              }
+            }
+          },
           "default": {
             "description": "Internal error",
             "schema": {
@@ -313,9 +410,22 @@ func init() {
         }
       }
     },
-    "getreceiptOKBody": {
-      "type": "file",
-      "x-go-gen-location": "operations"
+    "Sonde": {
+      "type": "object",
+      "properties": {
+        "balanceErrorThresholdExceeded": {
+          "type": "boolean"
+        },
+        "balanceWarningThresholdExceeded": {
+          "type": "boolean"
+        },
+        "ethereumActive": {
+          "type": "boolean"
+        },
+        "persistenceActive": {
+          "type": "boolean"
+        }
+      }
     }
   }
 }`))

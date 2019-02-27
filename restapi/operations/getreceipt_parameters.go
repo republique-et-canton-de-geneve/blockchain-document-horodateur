@@ -70,6 +70,7 @@ func (o *GetreceiptParams) BindRequest(r *http.Request, route *middleware.Matche
 	return nil
 }
 
+// bindHash binds and validates parameter Hash from query.
 func (o *GetreceiptParams) bindHash(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	if !hasKey {
 		return errors.Required("hash", "query")
@@ -90,6 +91,7 @@ func (o *GetreceiptParams) bindHash(rawData []string, hasKey bool, formats strfm
 	return nil
 }
 
+// bindLang binds and validates parameter Lang from query.
 func (o *GetreceiptParams) bindLang(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {

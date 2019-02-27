@@ -9,8 +9,8 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/runtime"
-
-	models "github.com/Magicking/rc-ge-ch-pdf/models"
+	models	"github.com/geneva_horodateur/models"
+//	models "github.com/Magicking/rc-ge-ch-pdf/models"
 )
 
 // ListtimestampedOKCode is the HTTP code returned for type ListtimestampedOK

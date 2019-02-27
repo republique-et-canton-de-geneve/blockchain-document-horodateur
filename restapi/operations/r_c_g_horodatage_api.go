@@ -38,6 +38,9 @@ func NewRCGHorodatageAPI(spec *loads.Document) *RCGHorodatageAPI {
 		JSONConsumer:        runtime.JSONConsumer(),
 		JSONProducer:        runtime.JSONProducer(),
 		BinProducer:         runtime.ByteStreamProducer(),
+		ConfigureSAMLHandler: ConfigureSAMLHandlerFunc(func(params ConfigureSAMLParams) middleware.Responder {
+			return middleware.NotImplemented("operation ConfigureSAML has not yet been implemented")
+		}),
 		DelreceiptsHandler: DelreceiptsHandlerFunc(func(params DelreceiptsParams) middleware.Responder {
 			return middleware.NotImplemented("operation Delreceipts has not yet been implemented")
 		}),
@@ -46,6 +49,9 @@ func NewRCGHorodatageAPI(spec *loads.Document) *RCGHorodatageAPI {
 		}),
 		ListtimestampedHandler: ListtimestampedHandlerFunc(func(params ListtimestampedParams) middleware.Responder {
 			return middleware.NotImplemented("operation Listtimestamped has not yet been implemented")
+		}),
+		MonitoringHandler: MonitoringHandlerFunc(func(params MonitoringParams) middleware.Responder {
+			return middleware.NotImplemented("operation Monitoring has not yet been implemented")
 		}),
 	}
 }
@@ -88,12 +94,16 @@ type RCGHorodatageAPI struct {
 	// BinProducer registers a producer for a "application/octet-stream" mime type
 	BinProducer runtime.Producer
 
+	// ConfigureSAMLHandler sets the operation handler for the configure s a m l operation
+	ConfigureSAMLHandler ConfigureSAMLHandler
 	// DelreceiptsHandler sets the operation handler for the delreceipts operation
 	DelreceiptsHandler DelreceiptsHandler
 	// GetreceiptHandler sets the operation handler for the getreceipt operation
 	GetreceiptHandler GetreceiptHandler
 	// ListtimestampedHandler sets the operation handler for the listtimestamped operation
 	ListtimestampedHandler ListtimestampedHandler
+	// MonitoringHandler sets the operation handler for the monitoring operation
+	MonitoringHandler MonitoringHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -161,6 +171,10 @@ func (o *RCGHorodatageAPI) Validate() error {
 		unregistered = append(unregistered, "BinProducer")
 	}
 
+	if o.ConfigureSAMLHandler == nil {
+		unregistered = append(unregistered, "ConfigureSAMLHandler")
+	}
+
 	if o.DelreceiptsHandler == nil {
 		unregistered = append(unregistered, "DelreceiptsHandler")
 	}
@@ -171,6 +185,10 @@ func (o *RCGHorodatageAPI) Validate() error {
 
 	if o.ListtimestampedHandler == nil {
 		unregistered = append(unregistered, "ListtimestampedHandler")
+	}
+
+	if o.MonitoringHandler == nil {
+		unregistered = append(unregistered, "MonitoringHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -274,6 +292,11 @@ func (o *RCGHorodatageAPI) initHandlerCache() {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
 
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/saml"] = NewConfigureSAML(o.context, o.ConfigureSAMLHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
@@ -288,6 +311,11 @@ func (o *RCGHorodatageAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/horodatage"] = NewListtimestamped(o.context, o.ListtimestampedHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/sonde"] = NewMonitoring(o.context, o.MonitoringHandler)
 
 }
 

@@ -1,25 +1,26 @@
 package internal
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"log"
-	"time"
-
-	"context"
-	"github.com/Magicking/rc-ge-ch-pdf/merkle"
+	"github.com/geneva_horodateur/merkle"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"log"
+	"time"
 )
 
 type Receipt struct {
 	gorm.Model
-	TargetHash      string
-	TransactionHash string
-	Filename        string
-	Date            time.Time
-	JSONData        []byte
+	TargetHash      					string
+	TransactionHash 					string
+	Filename        					string
+	Date            					time.Time
+	JSONData        					[]byte
 }
+
+var DB									*gorm.DB
 
 func InsertReceipt(ctx context.Context, now time.Time, filename string, rcpt *merkle.Chainpoint) error {
 	jsonData, err := json.Marshal(rcpt)
@@ -116,5 +117,6 @@ func InitDatabase(dbDsn string) (*gorm.DB, error) {
 		db.Close()
 		return nil, err
 	}
+	DB = db
 	return db, nil
 }

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	ethtk "github.com/Magicking/gethitihteg/ethereum"
-	"github.com/Magicking/rc-ge-ch-pdf/merkle"
+	"github.com/geneva_horodateur/merkle"
 	"golang.org/x/crypto/sha3"
 	"io"
 	"log"
@@ -23,6 +23,7 @@ func sendData(ctx context.Context, data []byte) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("ethtk.NewAnchor: %v", err)
 	}
+
 	tx, err = blkCtx.AO.Sign(tx)
 	if err != nil {
 		return "", fmt.Errorf("blkCtx.AO.Sign: %v", err)
@@ -31,6 +32,7 @@ func sendData(ctx context.Context, data []byte) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("blkCtx.NC.SendTransaction: %v", err)
 	}
+
 	hashHex := tx.Hash().Hex()
 	if strings.HasPrefix(hashHex, "0x") {
 		hashHex = hashHex[2:]
@@ -98,8 +100,6 @@ func UploadHandler(ctx context.Context, prefix string, handler http.Handler) htt
 			v.Anchors = []merkle.AnchorPoint{merkle.AnchorPoint{SourceID: txhash, Type: "ETHData"}}
 			InsertReceipt(ctx, now, files[i].Filename, &v)
 		}
-		fmt.Println(merkleRoot)
-		fmt.Println(receipts)
 	}
 
 	return http.HandlerFunc(middle)

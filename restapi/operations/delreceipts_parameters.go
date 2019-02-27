@@ -12,8 +12,6 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-
-	strfmt "github.com/go-openapi/strfmt"
 )
 
 // NewDelreceiptsParams creates a new DelreceiptsParams object
@@ -58,12 +56,8 @@ func (o *DelreceiptsParams) BindRequest(r *http.Request, route *middleware.Match
 				res = append(res, errors.NewParseError("hashes", "body", "", err))
 			}
 		} else {
-
-			// validate inline body array
+			// no validation required on inline body
 			o.Hashes = body
-			if err := o.validateHashesBody(route.Formats); err != nil {
-				res = append(res, err)
-			}
 		}
 	} else {
 		res = append(res, errors.Required("hashes", "body"))
@@ -71,11 +65,5 @@ func (o *DelreceiptsParams) BindRequest(r *http.Request, route *middleware.Match
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-// validateHashesBody validates an inline body parameter
-func (o *DelreceiptsParams) validateHashesBody(formats strfmt.Registry) error {
-
 	return nil
 }
