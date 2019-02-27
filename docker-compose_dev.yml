@@ -1,7 +1,9 @@
 version: '2'
 services:
   rcgech:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile_dev
     environment:
       - WS_URI=https://rinkeby.infura.io/v3/afeacc980c634655875d915ed65cb0e4
       - PRIVATE_KEY=87ED42E2AFCF878D1DAA2183AA23F32023F31D377D431BD005207A24B2ACD93A

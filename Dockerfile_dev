@@ -22,8 +22,6 @@ ADD myservice.key ${PROJECT_DIR}/
 
 WORKDIR ${PROJECT_DIR}
 
-RUN go build -v -o /go/bin/main ${PROJECT_DIR}/cmd/${PROJECT_NAME}/main.go
-ADD run.sh ${PROJECT_DIR}/
-ENTRYPOINT ${PROJECT_DIR}/run.sh
+CMD ["go", "run", "main.go"]
 
 EXPOSE 8090
