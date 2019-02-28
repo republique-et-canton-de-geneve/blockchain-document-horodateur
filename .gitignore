@@ -8,3 +8,5 @@
 
 # SonarQube
 .scannerwork/
+
+.idea
