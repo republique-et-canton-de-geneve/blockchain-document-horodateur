@@ -2,7 +2,7 @@ version: '2'
 services:
   rcgech:
     build:
-      context: .
+      context: ./horodateur_api
       dockerfile: Dockerfile_dev
     environment:
       - WS_URI=https://rinkeby.infura.io/v3/afeacc980c634655875d915ed65cb0e4
@@ -15,16 +15,13 @@ services:
       - postgres
     command: bash -c "go get github.com/pilu/fresh && fresh"
     volumes:
-      - .:/go/src/github.com/geneva_horodateur/
+      - ./horodateur_api:/go/src/github.com/geneva_horodateur/
 
-  caddy-rev:
-    image: abiosoft/caddy
+  webapp:
+    build:
+      context: ./horodateur_webapp
     ports:
-      - "0.0.0.0:8001:80"
-      - "0.0.0.0:8443:443"
-    volumes:
-      - "./Caddyfile:/etc/Caddyfile:ro"
-      - "./mockup:/var/www:ro"
+      - "0.0.0.0:8001:8080"
 
   postgres:
     image: postgres:9.5

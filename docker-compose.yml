@@ -1,7 +1,7 @@
 version: '2'
 services:
   rcgech:
-    build: .
+    build: ./horodateur_api
     environment:
       - WS_URI=https://rinkeby.infura.io/v3/afeacc980c634655875d915ed65cb0e4
       - PRIVATE_KEY=18030537DBDD38D0764947D40BED98FC4D2A21AF82765A7DE7B13D2E4076773C
@@ -12,14 +12,11 @@ services:
     links:
       - postgres
 
-  caddy-rev:
-    image: abiosoft/caddy
+  webapp:
+    build:
+      context: ./horodateur_webapp
     ports:
-      - "0.0.0.0:8001:80"
-      - "0.0.0.0:8443:443"
-    volumes:
-      - "./Caddyfile:/etc/Caddyfile:ro"
-      - "./mockup:/var/www:ro"
+      - "0.0.0.0:8001:8080"
 
   postgres:
     image: postgres:9.5
@@ -27,3 +24,4 @@ services:
       - POSTGRES_USER=tsUhfmkMfY
       - POSTGRES_PASSWORD=lrwOuiz4gH
       - POSTGRES_DB=rcgehorodatage
+
