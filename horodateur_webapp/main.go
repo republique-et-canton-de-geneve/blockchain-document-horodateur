@@ -49,8 +49,8 @@ func main() {
 	if err != nil {
 		panic(err) // TODO handle error
 	}
-
-	idpMetadataURL, err := url.Parse("http://ec2-18-184-234-216.eu-central-1.compute.amazonaws.com:8080/simplesaml/saml2/idp/metadata.php")
+	idpMetadataURL, err := url.Parse("http://ec2-18-184-234-216.eu-central-1.compute.amazonaws.com/ssorec.geneveid.ch_dgsi_blockchain.xml")
+	//idpMetadataURL, err := url.Parse("http://ec2-18-184-234-216.eu-central-1.compute.amazonaws.com:8080/simplesaml/saml2/idp/metadata.php")
 	if err != nil {
 		panic(err) // TODO handle error
 	}
