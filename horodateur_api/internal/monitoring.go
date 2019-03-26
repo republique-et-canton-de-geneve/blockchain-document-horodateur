@@ -42,8 +42,7 @@ func GetNodeSignal(ctx context.Context) bool {
 	//Above this comment is the line of code used for production version, the hash used is from the main net.
 	//Below this comment is the line of code used for development version, the hash used is from the rinkeby testnet.
 	txHash := common.HexToHash("d3851f8ee9bbd79a4cf332999a89a4b2c6b8d5c4c0c001ea85e95ab7997843c0")
-	i, _, err := blkCtx.NC.GetTransaction(ctx, txHash)
-	fmt.Println(i)
+	_, _, err := blkCtx.NC.GetTransaction(ctx, txHash)
 	if err != nil {
 		return false
 	}
