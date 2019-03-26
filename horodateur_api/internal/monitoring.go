@@ -85,16 +85,13 @@ func GetEthereumBalance() (bool, bool) {
 	ethValue := new(big.Float).Quo(fbalance, big.NewFloat(math.Pow10(18)))
 	errThre, warThre := big.NewFloat(mn.ErrorThreshold), big.NewFloat(mn.WarningThreshold)
 	var errBool, warnBool bool
-
+	errBool = true
 	if ethValue.Cmp(errThre) == -1 {
 		errBool = false
-	} else {
-		errBool = true
 	}
+	warnBool = true
 	if ethValue.Cmp(warThre) == -1 {
 		warnBool = false
-	} else {
-		warnBool = true
 	}
 	return errBool, warnBool
 }
