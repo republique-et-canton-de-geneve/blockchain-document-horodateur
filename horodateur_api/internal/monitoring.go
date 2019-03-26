@@ -12,38 +12,41 @@ import (
 )
 
 type Sonde struct {
-	ethereumActive						bool
-	balanceErrorThresholdExceeded		bool
-	balanceWarningThresholdExceeded 	bool
-	persistenceActive					bool
+	ethereumActive                  bool
+	balanceErrorThresholdExceeded   bool
+	balanceWarningThresholdExceeded bool
+	persistenceActive               bool
 }
 
 type TestStruct struct {
-	Test 								string
+	Test string
 }
 
 type MonitoringEnv struct {
-	NodeAddress                        	string
-	LockedAddress                       string
-	PrivateKey							string
-	ErrorThreshold                      float64
-	WarningThreshold                    float64
+	NodeAddress      string
+	LockedAddress    string
+	PrivateKey       string
+	ErrorThreshold   float64
+	WarningThreshold float64
 }
 
 var mn MonitoringEnv
 
-func GetNodeSignal(ctx context.Context) (bool){
+func GetNodeSignal(ctx context.Context) bool {
 	blkCtx, ok := BLKFromContext(ctx)
 	if !ok {
-		log.Println("Could not obtain ClientConnector from context\n")
+		log.Fatalf("Could not obtain ClientConnector from context\n", ok)
 		return false
 	}
-	// test connexion
-	i, err := blkCtx.NC.SuggestGasPrice(ctx)
+	//txHash:= common.HexToHash("75139f2e9f045987f67ab04541d03d7cd872e663b5efd758c20da42c89e652eb")
+	//Above this comment is the line of code used for production version, the hash used is from the main net.
+	//Below this comment is the line of code used for development version, the hash used is from the rinkeby testnet.
+	txHash := common.HexToHash("d3851f8ee9bbd79a4cf332999a89a4b2c6b8d5c4c0c001ea85e95ab7997843c0")
+	i, _, err := blkCtx.NC.GetTransaction(ctx, txHash)
+	fmt.Println(i)
 	if err != nil {
 		return false
 	}
-	log.Println(i)
 	return true
 }
 
@@ -84,12 +87,12 @@ func GetEthereumBalance() (bool, bool) {
 	errThre, warThre := big.NewFloat(mn.ErrorThreshold), big.NewFloat(mn.WarningThreshold)
 	var errBool, warnBool bool
 
-	if (ethValue.Cmp(errThre) == -1) {
+	if ethValue.Cmp(errThre) == -1 {
 		errBool = false
 	} else {
 		errBool = true
 	}
-	if (ethValue.Cmp(warThre) == -1) {
+	if ethValue.Cmp(warThre) == -1 {
 		warnBool = false
 	} else {
 		warnBool = true
@@ -99,9 +102,9 @@ func GetEthereumBalance() (bool, bool) {
 
 func InitMonitoring(nodeAddress string, lockedAddress string, privateKey string, errorThreshold float64, warningThreshold float64) MonitoringEnv {
 	mn = MonitoringEnv{NodeAddress: nodeAddress,
-		LockedAddress: lockedAddress,
-		PrivateKey: privateKey,
-		ErrorThreshold: errorThreshold,
+		LockedAddress:    lockedAddress,
+		PrivateKey:       privateKey,
+		ErrorThreshold:   errorThreshold,
 		WarningThreshold: warningThreshold}
 	return mn
 }
