@@ -1,24 +1,51 @@
 package main
+
 import (
 	"crypto/rsa"
 	"crypto/tls"
 	"crypto/x509"
+	"github.com/crewjam/saml/samlsp"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
-
-	"github.com/crewjam/saml/samlsp"
+	"strings"
 )
 
 type RouteHandler struct {
 
 }
 
+
+/*
+	Reverse Proxy Logic
+*/
+
+// Serve a reverse proxy for a given url
+func serveReverseProxy(target string, res http.ResponseWriter, req *http.Request) {
+	// parse the url
+	url, _ := url.Parse(target)
+
+	// create the reverse proxy
+	proxy := httputil.NewSingleHostReverseProxy(url)
+
+	// Update the headers to allow for SSL redirection
+	req.URL.Host = url.Host
+	req.URL.Scheme = url.Scheme
+	req.Header.Set("X-Forwarded-Host", req.Header.Get("Host"))
+	req.Host = url.Host
+
+	// Note that ServeHttp is non blocking and uses a go routine under the hood
+	proxy.ServeHTTP(res, req)
+}
+
 func (this *RouteHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path[1:]
 
 	indexToServe := path
+
+	log.Println(path)
 
 	switch path {
 	case "fr":
@@ -35,6 +62,9 @@ func (this *RouteHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if err == nil {
 		http.ServeFile(w, r, "mockup/"+string(indexToServe))
+	} else if strings.Split(path, "/")[0] == "api" {
+		r.URL.Path = strings.TrimLeft(r.URL.Path, "api/")
+		serveReverseProxy("http://rcgech:8090", w, r)
 	} else {
 		http.Redirect(w, r, "https://www.ge.ch/dossier/geneve-numerique/blockchain", 308)
 	}
