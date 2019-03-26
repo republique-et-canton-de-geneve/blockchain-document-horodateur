@@ -111,7 +111,7 @@ func MonitoringHandler(ctx context.Context, params op.MonitoringParams) middlewa
 	}
 	sondeResp = append(sondeResp, &sondeResp_rcpt)
 	return op.NewMonitoringOK().WithPayload(sondeResp)
-	}
+}
 
 func ConfigureSAMLHandler(ctx context.Context, params op.ConfigureSAMLParams) middleware.Responder {
 	//configureSAML()
