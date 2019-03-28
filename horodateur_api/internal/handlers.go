@@ -102,7 +102,7 @@ func MonitoringHandler(ctx context.Context, params op.MonitoringParams) middlewa
 	if err != nil {
 		persistence = false
 	}
-	errorThreshold, warningThreshold := GetEthereumBalance()
+	errorThreshold, warningThreshold := GetEthereumBalance(ctx)
 	var sondeResp []*models.Sonde
 	sondeResp_rcpt := models.Sonde{EthereumActive: nodeOk,
 		BalanceErrorThresholdExceeded: errorThreshold,
