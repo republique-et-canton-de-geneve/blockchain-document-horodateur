@@ -12,19 +12,10 @@ github.com/allegro/bigcache/queue
 github.com/aristanetworks/goarista/monotime
 # github.com/asaskevich/govalidator v0.0.0-20180720115003-f9ffefc3facf
 github.com/asaskevich/govalidator
-# github.com/beevik/etree v1.1.0
-github.com/beevik/etree
 # github.com/btcsuite/btcd v0.0.0-20190209000034-12ce2fc7d321
 github.com/btcsuite/btcd/btcec
-# github.com/crewjam/saml v0.0.0-20180831135026-ebc5f787b786
-github.com/crewjam/saml/samlsp
-github.com/crewjam/saml
-github.com/crewjam/saml/logger
-github.com/crewjam/saml/xmlenc
 # github.com/deckarep/golang-set v1.7.1
 github.com/deckarep/golang-set
-# github.com/dgrijalva/jwt-go v3.2.0+incompatible
-github.com/dgrijalva/jwt-go
 # github.com/docker/go-units v0.3.3
 github.com/docker/go-units
 # github.com/ethereum/go-ethereum v1.8.22
@@ -101,8 +92,6 @@ github.com/jinzhu/gorm
 github.com/jinzhu/gorm/dialects/postgres
 # github.com/jinzhu/inflection v0.0.0-20180308033659-04140366298a
 github.com/jinzhu/inflection
-# github.com/jonboulle/clockwork v0.1.0
-github.com/jonboulle/clockwork
 # github.com/lib/pq v1.0.0
 github.com/lib/pq
 github.com/lib/pq/hstore
@@ -119,10 +108,6 @@ github.com/pborman/uuid
 github.com/rjeczalik/notify
 # github.com/rs/cors v1.6.0
 github.com/rs/cors
-# github.com/russellhaering/goxmldsig v0.0.0-20180430223755-7acd5e4a6ef7
-github.com/russellhaering/goxmldsig
-github.com/russellhaering/goxmldsig/etreeutils
-github.com/russellhaering/goxmldsig/types
 # github.com/satori/go.uuid v1.2.0
 github.com/satori/go.uuid
 # github.com/syndtr/goleveldb v0.0.0-20190203031304-2f17a3356c66
@@ -140,7 +125,6 @@ github.com/syndtr/goleveldb/leveldb/storage
 github.com/syndtr/goleveldb/leveldb/table
 # golang.org/x/crypto v0.0.0-20190208162236-193df9c0f06f
 golang.org/x/crypto/sha3
-golang.org/x/crypto/ripemd160
 golang.org/x/crypto/pbkdf2
 golang.org/x/crypto/scrypt
 # golang.org/x/net v0.0.0-20190206173232-65e2d4e15006
