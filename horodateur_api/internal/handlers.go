@@ -102,15 +102,27 @@ func MonitoringHandler(ctx context.Context, params op.MonitoringParams) middlewa
 	if err != nil {
 		persistence = false
 	}
-	errorThreshold, warningThreshold := GetEthereumBalance(ctx)
-	var sondeResp []*models.Sonde
-	sondeResp_rcpt := models.Sonde{EthereumActive: nodeOk,
-		BalanceErrorThresholdExceeded: errorThreshold,
-		BalanceWarningThresholdExceeded: warningThreshold,
-		PersistenceActive: persistence,
+
+	if nodeOk {
+		errorThreshold, warningThreshold := GetEthereumBalance()
+		var sondeResp []*models.Sonde
+		sondeResp_rcpt := models.Sonde{EthereumActive: true,
+			BalanceErrorThresholdExceeded: errorThreshold,
+			BalanceWarningThresholdExceeded: warningThreshold,
+			PersistenceActive: persistence,
+		}
+		sondeResp = append(sondeResp, &sondeResp_rcpt)
+		return op.NewMonitoringOK().WithPayload(sondeResp)
+	} else {
+		var sondeResp []*models.Sonde
+		sondeResp_rcpt := models.Sonde{EthereumActive: false,
+			BalanceErrorThresholdExceeded: false,
+			BalanceWarningThresholdExceeded: false,
+			PersistenceActive: persistence,
+		}
+		sondeResp = append(sondeResp, &sondeResp_rcpt)
+		return op.NewMonitoringOK().WithPayload(sondeResp)
 	}
-	sondeResp = append(sondeResp, &sondeResp_rcpt)
-	return op.NewMonitoringOK().WithPayload(sondeResp)
 }
 
 func ConfigureSAMLHandler(ctx context.Context, params op.ConfigureSAMLParams) middleware.Responder {

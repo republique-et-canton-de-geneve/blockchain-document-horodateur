@@ -73,33 +73,29 @@ func GetDBTests() (bool, error) {
 	return true, nil
 }
 
-func GetEthereumBalance(ctx context.Context) (bool, bool) {
-	nodeOk := GetNodeSignal(ctx)
+func GetEthereumBalance() (bool, bool) {
 
-	if nodeOk == false {
-		return false, false
-	} else {
-		client, err := ethclient.Dial(mn.NodeAddress)
-		account := common.HexToAddress(mn.LockedAddress)
-		balance, err := client.BalanceAt(context.Background(), account, nil)
-		if err != nil {
-			log.Fatalf("getting balance error ",err)
-		}
-		fbalance := new(big.Float)
-		fbalance.SetString(balance.String())
-		ethValue := new(big.Float).Quo(fbalance, big.NewFloat(math.Pow10(18)))
-		errThre, warThre := big.NewFloat(mn.ErrorThreshold), big.NewFloat(mn.WarningThreshold)
-		var errBool, warnBool bool
-		errBool = true
-		if ethValue.Cmp(errThre) == -1 {
-			errBool = false
-		}
-		warnBool = true
-		if ethValue.Cmp(warThre) == -1 {
-			warnBool = false
-		}
-		return errBool, warnBool
+	client, err := ethclient.Dial(mn.NodeAddress)
+	account := common.HexToAddress(mn.LockedAddress)
+	balance, err := client.BalanceAt(context.Background(), account, nil)
+	if err != nil {
+		log.Fatalf("getting balance error ",err)
 	}
+	fbalance := new(big.Float)
+	fbalance.SetString(balance.String())
+	ethValue := new(big.Float).Quo(fbalance, big.NewFloat(math.Pow10(18)))
+	errThre, warThre := big.NewFloat(mn.ErrorThreshold), big.NewFloat(mn.WarningThreshold)
+	var errBool, warnBool bool
+	errBool = true
+	if ethValue.Cmp(errThre) == -1 {
+		errBool = false
+	}
+	warnBool = true
+	if ethValue.Cmp(warThre) == -1 {
+		warnBool = false
+	}
+
+	return errBool, warnBool
 }
 
 func InitMonitoring(nodeAddress string, lockedAddress string, privateKey string, errorThreshold float64, warningThreshold float64) MonitoringEnv {
