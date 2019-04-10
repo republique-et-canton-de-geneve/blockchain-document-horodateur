@@ -5,8 +5,7 @@
 *.pdf
 *.snm
 *.toc
-
+.idea/
 # SonarQube
 .scannerwork/
-
-.idea
+tmp/
