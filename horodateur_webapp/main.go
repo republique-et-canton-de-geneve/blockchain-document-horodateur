@@ -42,7 +42,17 @@ func serveReverseProxy(target string, res http.ResponseWriter, req *http.Request
 }
 
 func (this *RouteHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	mainURI := os.Getenv("MAIN_URI")
+
+
 	path := r.URL.Path[1:]
+
+	if strings.Split(path, "/")[0] != mainURI {
+		http.Redirect(w, r, "https://www.ge.ch/dossier/geneve-numerique/blockchain", 308)
+		return
+	}
+
+	path = strings.TrimPrefix(path, mainURI+"/")
 
 	indexToServe := path
 
@@ -67,7 +77,7 @@ func (this *RouteHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		http.ServeFile(w, r, "mockup/"+string(indexToServe))
 	} else if strings.Split(path, "/")[0] == "api" {
-		r.URL.Path = strings.TrimLeft(r.URL.Path, "api/")
+		r.URL.Path = "/"+strings.TrimPrefix(r.URL.Path, "/"+mainURI+"/api/") // Remove api from uri
 
 		apiHost := os.Getenv("API_HOST")
 

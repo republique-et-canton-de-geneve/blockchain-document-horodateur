@@ -1,4 +1,5 @@
 FROM golang
+MAINTAINER Sylvain Laurent
 
 RUN apt-get update && apt-get -y install \
         texlive texlive-xetex texlive-lang-french && \
