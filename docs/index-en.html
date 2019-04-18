@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Blockchain</title>
+
+    <!-- CSS  -->
+    <link rel="stylesheet" href="assets/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="assets/style.css" type="text/css" rel="stylesheet" media="screen,projection">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 no-padding">
+            <img class="img-responsive" src="assets/header.jpg" alt="Stage of Geneva logo">
+        </div>
+    </div>
+
+    <div class="row header">
+        <div class="col-xs-12 col-md-7">
+            <h1>Authenticating official documents using the Blockchain</h1>
+        </div>
+        <div class="col-xs-11 col-md-4 email-align fix-height">
+            Contact: <a href="mailto:opensource@etat.ge.ch">opensource@etat.ge.ch</a>
+        </div>
+    </div>
+
+    <div class="row table-container repo-bar">
+        <div class="is-table-row">
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="col-xs-12 col-md-8 fix-height link-bar">
+                        <a class="btn btn-danger"
+                           href="https://github.com/republique-et-canton-de-geneve/blockchain-document-horodateur">
+                            Discover the open source code of the Timestamping system (in French).
+                        </a>
+                    </div>
+                    <div class="col-xs-12 col-md-8 fix-height link-bar">
+                        <a class="btn btn-danger"
+                           href="https://github.com/republique-et-canton-de-geneve/blockchain-document-validateur">
+                            Discover the open source code of the Validating system (in French).</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row table-container">
+        <div class="is-table-row">
+            <div class="col-xs-12 col-md-6 box">
+                <h2>Authenticating documents with the blockchain</h2>
+                <p>
+                    The State of Geneva carried out a proof of concept study for Geneva's Office du registre du
+                    commerce (Trade and Companies Register).
+                    The goal was to assess the usage of the blockchain for authenticating the documents produced by 
+                    the State of Geneva's administration and delivered to the citizens.
+                    The solution consists of two parts: a <i>timestamping system</i> and a <i>validation system</i>.
+                    The two systems get involved in the following interaction between the citizen and the Register:
+                    <ol>
+                        <li>
+                            The citizen requests an extract from the Register, related to a company of their choice.
+                        </li>
+                        <li>
+                            The Register officer creates the extract and uploads it to the <i>timestamping system</i>.
+                            The timestamping system records a hash of the file on the
+                            <a href="https://fr.wikipedia.org/wiki/Ethereum">Ethereum</a> blockchain and creates a timestamping
+                            receipt file.
+                        </li>
+                        <li>
+                            The Register officer sends the extract file and the timestamping receipt file to the citizen,
+                            via email.
+                            Both files are in PDF format.
+                            At this stage the citizen has an extract, but they have no guarantee as regards whether the extract is a genuine one;
+                            This is in contrast with the paper document - fully signed and stamped - that they would have 
+                            obtained by physically going to the administration counter.
+                        </li>
+                        <li>
+                            The citizen, or any person to whom they handed the extract to, browses to the <i>validation 
+                            system</i>.
+                            The citizen uploads the extract file and the timestamping receipt file.
+                            The system checks the blockchain and returns a validity response. If the response is positive, the
+                            citizen is assured that the extract is genuine.
+                        </li>
+                    </ol>
+                </p>
+                <p>
+                    Both systems are implemented as Web applications, so they are accessible using any browser, e.g., Firefox,
+                    Chrome or Edge.
+                </p>
+                <p>
+                    Although the project is specifically tuned for extracts of the Trade and Companies Register, it can be
+                    easily retargeted to authenticate documents of any kind. 
+                    </p>
+            </div>
+            <div class="col-xs-12 col-md-6 box">
+                <h2>Open source licence: AGPL 3</h2>
+                <p>
+                    The project is published with licence <a href="https://www.gnu.org/licenses/agpl-3.0.txt">AGPL v3</a>.
+                    This licence has been written by the <a href="https://www.fsf.org/">Free Software Foundation</a>.
+                </p>
+                <p>
+                    The State of Geneva is encouraging any IT community to contribute to the source code of this application
+                    through this platform.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
