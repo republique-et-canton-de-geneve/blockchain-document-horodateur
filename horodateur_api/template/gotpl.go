@@ -1,11 +1,15 @@
 package template
 
 import (
+	"crypto/ecdsa"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/geneva_horodateur/merkle"
 	"github.com/satori/go.uuid"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -17,6 +21,7 @@ type ChainpointTex struct {
 	merkle.Chainpoint
 	Date     string
 	JsonData string
+	Address  string
 }
 
 func MakeTemplate(rcpt []byte, lang string, now time.Time) ([]byte, error) {
@@ -40,6 +45,19 @@ func MakeTemplate(rcpt []byte, lang string, now time.Time) ([]byte, error) {
 		return nil, err
 	}
 	_rcpt.Date = fmt.Sprintf("%d-%02d-%02d", now.Year(), now.Month(), now.Day())
+
+	privateKeyHex := os.Getenv("PRIVATE_KEY")
+	privateKey, err := crypto.HexToECDSA(privateKeyHex)
+	if err != nil {
+		log.Fatalf("Error on private key conversion: %s", err.Error())
+	}
+	publicKey := privateKey.Public()
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+	if !ok {
+		return nil, errors.New("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
+	}
+	_rcpt.Address = crypto.PubkeyToAddress(*publicKeyECDSA).String()
+
 	tmpl.Execute(f, _rcpt)
 	cmd := exec.Command("./template/make_receipt.sh", _uuid)
 
