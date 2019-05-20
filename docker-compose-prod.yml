@@ -22,6 +22,7 @@ services:
       - SP_URL=http://ec2-18-184-234-216.eu-central-1.compute.amazonaws.com:8001 # URL of the service provider
       - API_HOST=rcgech:8090 # API host, is equal to the <api container name>:<port>
       - MAIN_URI=ctihorodateur # URI used as a prefix in the webapp
+      - VIRTUAL_HOST=example.com
     working_dir: /app
     command: /app/webapp
     volumes:
@@ -35,7 +36,6 @@ services:
       - POSTGRES_PASSWORD=lrwOuiz4gH
       - POSTGRES_DB=rcgehorodatage
 
-
   # SSL Let's Encrypt config
 
   nginx-proxy:
@@ -45,21 +45,11 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - /etc/letsencrypt/live/example.com:/etc/nginx/certs:ro # Edit path to right domain name
+      - /path/to/certs/:/etc/nginx/certs:ro # Edit path to the right certs folder, name should be example.com.crt and example.com.key
       - /etc/nginx/vhost.d
       - /usr/share/nginx/html
-    labels:
-      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
 
-  nginx-proxy-letsencrypt-companion:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    volumes:
-      - /etc/letsencrypt/live/example.com:/etc/nginx/certs:rw # Edit path to right domain name
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    environment:
-      - "FILES_PERMS=600"
-    volumes_from:
-      - nginx-proxy
+
 
 # Add these env vars to services that need to be reached from the Internet
 # VIRTUAL_HOST=example.com ; LETSENCRYPT_HOST=example.com ; LETSENCRYPT_EMAIL= foo@example.com
