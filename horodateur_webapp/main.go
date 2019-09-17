@@ -4,7 +4,6 @@ import (
 	"crypto/rsa"
 	"crypto/tls"
 	"crypto/x509"
-	"encoding/json"
 	"github.com/crewjam/saml/samlsp"
 	"github.com/gorilla/csrf"
 	"io/ioutil"
