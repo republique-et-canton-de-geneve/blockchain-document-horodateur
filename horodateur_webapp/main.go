@@ -16,11 +16,6 @@ import (
 )
 
 type RouteHandler struct {
-
-}
-
-type TokenPayload struct  {
-	Token string	`json:"token"`
 }
 
 /*
@@ -72,7 +67,7 @@ func (this *RouteHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		indexToServe = "index.de.html"
 	}
 
-	_, err := ioutil.ReadFile("mockup/"+string(indexToServe))
+	_, err := ioutil.ReadFile("mockup/" + string(indexToServe))
 
 
 	w.Header().Set("X-Frame-Options", "DENY")
@@ -88,13 +83,17 @@ func (this *RouteHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		http.ServeFile(w, r, "mockup/"+string(indexToServe))
 	} else if strings.Split(path, "/")[0] == "api" {
-		w.Header().Set("X-CSRF-Token", csrf.Token(r))
+		if (strings.Split(path, "/")[1] == "swagger.json") {
+			w.WriteHeader(404)
+		} else {
+			w.Header().Set("X-CSRF-Token", csrf.Token(r))
 
-		r.URL.Path = "/"+strings.TrimPrefix(r.URL.Path, "/"+mainURI+"/api/") // Remove api from uri
+			r.URL.Path = "/" + strings.TrimPrefix(r.URL.Path, "/"+mainURI+"/api/") // Remove api from uri
 
-		apiHost := os.Getenv("API_HOST")
+			apiHost := os.Getenv("API_HOST")
 
-		serveReverseProxy("http://"+apiHost, w, r)
+			serveReverseProxy("http://"+apiHost, w, r)
+		}
 	} else {
 		http.Redirect(w, r, "https://www.ge.ch/dossier/geneve-numerique/blockchain", 308)
 	}
@@ -121,7 +120,6 @@ func main() {
 
 	spEnv := os.Getenv("SP_URL")
 
-
 	rootURL, err := url.Parse(spEnv)
 	if err != nil {
 		log.Fatal(err)
@@ -142,8 +140,6 @@ func main() {
 
 	// Main Gateway to Webapp & API, it needs SAML login
 	http.Handle("/", samlSP.RequireAccount(http.HandlerFunc(CSRF(new(RouteHandler)).ServeHTTP)))
-
-
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		panic(err)
