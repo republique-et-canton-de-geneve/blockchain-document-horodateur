@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-models "github.com/geneva_horodateur/models"
+	models "github.com/geneva_horodateur/models"
 	op "github.com/geneva_horodateur/restapi/operations"
 	runtime "github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
