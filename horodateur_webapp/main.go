@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"github.com/crewjam/saml/samlsp"
+	"github.com/gorilla/csrf"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -18,6 +19,9 @@ type RouteHandler struct {
 
 }
 
+type TokenPayload struct  {
+	Token string	`json:"token"`
+}
 
 /*
 	Reverse Proxy Logic
@@ -43,7 +47,6 @@ func serveReverseProxy(target string, res http.ResponseWriter, req *http.Request
 
 func (this *RouteHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	mainURI := os.Getenv("MAIN_URI")
-
 
 	path := r.URL.Path[1:]
 
@@ -81,8 +84,12 @@ func (this *RouteHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Otherwise serve API if uri == /api/*
 	// Finally redirect if incorrect request
 	if err == nil {
+		w.Header().Set("X-CSRF-Token", csrf.Token(r))
+
 		http.ServeFile(w, r, "mockup/"+string(indexToServe))
 	} else if strings.Split(path, "/")[0] == "api" {
+		w.Header().Set("X-CSRF-Token", csrf.Token(r))
+
 		r.URL.Path = "/"+strings.TrimPrefix(r.URL.Path, "/"+mainURI+"/api/") // Remove api from uri
 
 		apiHost := os.Getenv("API_HOST")
@@ -127,11 +134,16 @@ func main() {
 		IDPMetadataURL: idpMetadataURL,
 	})
 
+
 	// This is where the SAML package will open information about SP to the world
 	http.Handle("/saml/", samlSP)
 
+	CSRF := csrf.Protect([]byte("32-byte-long-auth-key"), csrf.Secure(false))
+
 	// Main Gateway to Webapp & API, it needs SAML login
-	http.Handle("/", samlSP.RequireAccount(http.HandlerFunc(new(RouteHandler).ServeHTTP)))
+	http.Handle("/", samlSP.RequireAccount(http.HandlerFunc(CSRF(new(RouteHandler)).ServeHTTP)))
+
+
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		panic(err)
