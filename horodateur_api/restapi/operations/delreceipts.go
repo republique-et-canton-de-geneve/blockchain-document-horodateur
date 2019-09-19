@@ -7,6 +7,7 @@ package operations
 
 import (
 	"net/http"
+	"errors"
 
 	middleware "github.com/go-openapi/runtime/middleware"
 )
@@ -50,7 +51,7 @@ func (o *Delreceipts) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	var Params = NewDelreceiptsParams()
 
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
-		o.Context.Respond(rw, r, route.Produces, route, err)
+		o.Context.Respond(rw, r, route.Produces, route, errors.New("Wrong params"))
 		return
 	}
 

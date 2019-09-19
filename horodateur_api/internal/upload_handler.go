@@ -49,7 +49,7 @@ func UploadHandler(ctx context.Context, prefix string, handler http.Handler) htt
 		//parse the multipart form in the request
 		err := r.ParseMultipartForm(100000)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
@@ -64,14 +64,14 @@ func UploadHandler(ctx context.Context, prefix string, handler http.Handler) htt
 			file, err := files[i].Open()
 			defer file.Close()
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
 				return
 			}
 
 			h := sha3.New256()
 			//sum256 the file
 			if _, err := io.Copy(h, file); err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
 				return
 			}
 			//associate filename with hash
@@ -88,7 +88,7 @@ func UploadHandler(ctx context.Context, prefix string, handler http.Handler) htt
 		//send merkleroot
 		txhash, err := sendData(ctx, merkleRoot)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 		now := time.Now()
