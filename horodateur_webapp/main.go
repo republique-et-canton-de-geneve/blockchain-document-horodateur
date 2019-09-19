@@ -142,7 +142,7 @@ func main() {
 	// This is where the SAML package will open information about SP to the world
 	http.Handle("/saml/", samlSP)
 
-	CSRF := csrf.Protect([]byte("32-byte-long-auth-key"), csrf.Secure(false))
+	CSRF := csrf.Protect([]byte("32-byte-long-auth-key"))
 
 	// Main Gateway to Webapp & API, it needs SAML login
 	http.Handle("/", samlSP.RequireAccount(http.HandlerFunc(CSRF(new(RouteHandler)).ServeHTTP)))
