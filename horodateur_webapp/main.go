@@ -42,6 +42,11 @@ func serveReverseProxy(target string, res http.ResponseWriter, req *http.Request
 }
 
 func (this *RouteHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if(r.Method != http.MethodGet && r.Method != http.MethodPost) {
+		w.WriteHeader(444)
+		return
+	}
+
 	mainURI := os.Getenv("MAIN_URI")
 
 	path := r.URL.Path[1:]
@@ -87,6 +92,8 @@ func (this *RouteHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if (strings.Split(path, "/")[1] == "swagger.json") {
 			w.WriteHeader(404)
 		} else {
+			w.Header().Set("X-CSRF-Token", csrf.Token(r))
+
 			r.URL.Path = "/" + strings.TrimPrefix(r.URL.Path, "/"+mainURI+"/api/") // Remove api from uri
 
 			apiHost := os.Getenv("API_HOST")
