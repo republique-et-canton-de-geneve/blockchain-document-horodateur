@@ -86,7 +86,7 @@ func DelreceiptsHandler(ctx context.Context, params op.DelreceiptsParams) middle
 	}
 
 	for _, hash := range params.Hashes {
-		err = DelReceiptByHash(ctx, hash)
+		err := DelReceiptByHash(ctx, hash)
 		if err != nil {
 			log.Println(err)
 		}
