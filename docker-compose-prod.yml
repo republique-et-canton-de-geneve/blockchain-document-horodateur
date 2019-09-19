@@ -1,7 +1,7 @@
 version: '2'
 services:
   rcgech:
-    image: blockchainpartnerhub/geneva_horodateur_rcgech:1.0
+    image: blockchainpartnerhub/geneva_horodateur_rcgech:1.0.1
     environment:
       - WS_URI=https://rinkeby.infura.io/v3/afeacc980c634655875d915ed65cb0e4
       - PRIVATE_KEY=18030537DBDD38D0764947D40BED98FC4D2A21AF82765A7DE7B13D2E4076773C
@@ -13,7 +13,7 @@ services:
       - postgres
 
   webapp:
-    image: blockchainpartnerhub/geneva_horodateur_webapp:1.0
+    image: blockchainpartnerhub/geneva_horodateur_webapp:1.0.1
     ports:
       - "0.0.0.0:8001:8080"
     environment:
@@ -40,9 +40,7 @@ services:
   # SSL Let's Encrypt config
 
   nginx-proxy:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
+    image: blockchainpartnerhub/geneva_nginx_proxy:1.0
     ports:
       - "80:80"
       - "443:443"
