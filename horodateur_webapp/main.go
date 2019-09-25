@@ -139,8 +139,10 @@ func main() {
 	})
 
 
+	mainURI := os.Getenv("MAIN_URI")
+
 	// This is where the SAML package will open information about SP to the world
-	http.Handle("/saml/", samlSP)
+	http.Handle("/"+mainURI+"/saml/", samlSP)
 
 	CSRF := csrf.Protect([]byte("32-byte-long-auth-key"))
 
