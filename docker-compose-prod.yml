@@ -13,7 +13,7 @@ services:
       - postgres
 
   webapp:
-    image: blockchainpartnerhub/geneva_horodateur_webapp:1.0.1
+    image: blockchainpartnerhub/geneva_horodateur_webapp:1.0.2
     ports:
       - "0.0.0.0:8001:8080"
     environment:
