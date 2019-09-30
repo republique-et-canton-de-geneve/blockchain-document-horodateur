@@ -74,6 +74,7 @@ services:
 
   postgres:
     image: postgres:9.5
+    user: postgres
     environment:
       - POSTGRES_USER=tsUhfmkMfY
       - POSTGRES_PASSWORD=lrwOuiz4gH

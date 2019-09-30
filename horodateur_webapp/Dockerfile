@@ -14,8 +14,15 @@ RUN go build -o webapp
 
 
 FROM alpine
+# Create a group and user
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
 WORKDIR /app
 COPY --from=build-env /go/src/github.com/geneva_horodateur/webapp /app/
 COPY --from=build-env /go/src/github.com/geneva_horodateur/mockup /app/mockup
+
+RUN chown appuser:appgroup -R .
+# Tell docker that all future commands should run as the appuser user
+USER appuser
 
 EXPOSE 8080

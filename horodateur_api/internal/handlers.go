@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-models "github.com/geneva_horodateur/models"
+	models "github.com/geneva_horodateur/models"
 	op "github.com/geneva_horodateur/restapi/operations"
 	runtime "github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
@@ -65,6 +65,26 @@ func GetreceiptHandler(ctx context.Context, params op.GetreceiptParams) middlewa
 }
 
 func DelreceiptsHandler(ctx context.Context, params op.DelreceiptsParams) middleware.Responder {
+	for _, hash := range params.Hashes {
+		if(len(hash) == 0) {
+			err_str := fmt.Sprintf("Please make sure that hash \"%s\" is valid", hash)
+			log.Printf(err_str)
+			return op.NewDelreceiptsDefault(400).WithPayload(&models.Error{Message: &err_str})
+		}
+
+		_, ok, err := GetReceiptByHash(ctx, hash)
+		if err != nil {
+			err_str := fmt.Sprintf("Failed to call %s: %v", "GetReceiptByHash", err)
+			log.Printf(err_str)
+			return op.NewGetreceiptDefault(500).WithPayload(&models.Error{Message: &err_str})
+		}
+		if !ok {
+			err_str := fmt.Sprintf("No receipt found for %s", hash)
+			log.Printf(err_str)
+			return op.NewGetreceiptDefault(500).WithPayload(&models.Error{Message: &err_str})
+		}
+	}
+
 	for _, hash := range params.Hashes {
 		err := DelReceiptByHash(ctx, hash)
 		if err != nil {
