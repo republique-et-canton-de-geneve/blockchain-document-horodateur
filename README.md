@@ -45,6 +45,7 @@ Mandatory :
 -   WS_URI is a URI pointing to an Ethereum RPC endpoint (e.g:  [http://localhost:8545](http://localhost:8545/)) => The Ethereum node must be fully sync prior to use.
 -   LOCKED_ADDR is an Ethereum address used by the validate service to verify the transaction signer of the receipt (e.g: 0x533a245f03a1a46cacb933a3beef752fd8ff45c3)
 -   PRIVATE_KEY is an Ethereum private key used by the timestamping service to sign the transaction used to insert the merkle root. (e.g: 18030537dbdd38d0764947d40bed98fc4d2a21af82765a7de7b13d2e4076773c) => The account related to the private key must be funded prior to use:  [https://github.com/ethereum/wiki/wiki/JSON-RPC](https://github.com/ethereum/wiki/wiki/JSON-RPC)
+-   CSRF_TIME_LIMIT is the longevity of a CSRF Token in seconds. Should at least be 300.
 
 Optional :
 
