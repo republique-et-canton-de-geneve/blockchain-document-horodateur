@@ -23,6 +23,7 @@ services:
       - API_HOST=rcgech:8090 # API host, is equal to the <api container name>:<port>
       - MAIN_URI=ctihorodateur # URI used as a prefix in the webapp
       - VIRTUAL_HOST=example.com
+      - CSRF_TIME_LIMIT=360
     working_dir: /app
     command: /app/webapp
     volumes:

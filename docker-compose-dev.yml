@@ -51,6 +51,7 @@ services:
       - SP_URL=http://ec2-18-184-234-216.eu-central-1.compute.amazonaws.com:8001 # URL of the service provider
       - API_HOST=rcgech1:8090 # API host, is equal to the <api container name>:<port>
       - MAIN_URI=ctihorodateur
+      - CSRF_TIME_LIMIT=360
     working_dir: /app
     command: /app/webapp
     volumes:
@@ -66,6 +67,7 @@ services:
       - SP_URL=http://ec2-18-184-234-216.eu-central-1.compute.amazonaws.com:8001 # URL of the service provider
       - API_HOST=rcgech2:8090 # API host, is equal to the <api container name>:<port>
       - MAIN_URI=ctihorodateur
+      - CSRF_TIME_LIMIT=360
     working_dir: /app
     command: /app/webapp
     volumes:

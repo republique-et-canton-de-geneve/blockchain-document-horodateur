@@ -12,6 +12,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -108,6 +109,18 @@ func (this *RouteHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func main() {
 	keyName := os.Getenv("KEY_NAME")
 
+	csrfLimitString := os.Getenv("CSRF_TIME_LIMIT")
+	if csrfLimitString == "" {
+		log.Fatalf("CSRF limit is not specified")
+	}
+	csrfLimit, err := strconv.Atoi(csrfLimitString)
+	if err != nil {
+		log.Fatalf("could not convert CSRF limit to int : %v", err.Error())
+	}
+	if csrfLimit < 5 * 60 {
+		log.Fatalf("CSRF limit should be at least 300 seconds")
+	}
+
 	keyPair, err := tls.LoadX509KeyPair(keyName+".cert", keyName+".key")
 	if err != nil {
 		log.Fatal(err)
@@ -136,6 +149,7 @@ func main() {
 		Key:            keyPair.PrivateKey.(*rsa.PrivateKey),
 		Certificate:    keyPair.Leaf,
 		IDPMetadataURL: idpMetadataURL,
+		CookieSecure:	true,
 	})
 
 
@@ -144,7 +158,7 @@ func main() {
 	// This is where the SAML package will open information about SP to the world
 	http.Handle("/"+mainURI+"/saml/", samlSP)
 
-	CSRF := csrf.Protect([]byte("32-byte-long-auth-key"))
+	CSRF := csrf.Protect([]byte("32-byte-long-auth-key"), csrf.MaxAge(csrfLimit))
 
 	// Main Gateway to Webapp & API, it needs SAML login
 	http.Handle("/", samlSP.RequireAccount(http.HandlerFunc(CSRF(new(RouteHandler)).ServeHTTP)))
