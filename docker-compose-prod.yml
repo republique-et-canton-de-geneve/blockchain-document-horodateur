@@ -13,7 +13,7 @@ services:
       - postgres
 
   webapp:
-    image: blockchainpartnerhub/geneva_horodateur_webapp:1.0.2
+    image: blockchainpartnerhub/geneva_horodateur_webapp:1.0.3
     ports:
       - "0.0.0.0:8001:8080"
     environment:
@@ -23,6 +23,7 @@ services:
       - API_HOST=rcgech:8090 # API host, is equal to the <api container name>:<port>
       - MAIN_URI=ctihorodateur # URI used as a prefix in the webapp
       - VIRTUAL_HOST=example.com
+      - CSRF_TIME_LIMIT=360
     working_dir: /app
     command: /app/webapp
     volumes:
