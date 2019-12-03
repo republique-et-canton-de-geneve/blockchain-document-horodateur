@@ -1,8 +1,8 @@
-%% This file implements a poster template for the 2014 Radboud 
-%% University corporate style. 
-%% 
+%% This file implements a poster template for the 2014 Radboud
+%% University corporate style.
+%%
 %% For comments, questions, and suggestions contact me at
-%% l.onrust@let.ru.nl 
+%% l.onrust@let.ru.nl
 %%
 %% You can distribute and edit the files as you wish, but I'd
 %% love to hear of any changes. Also, if you let me know that
@@ -26,7 +26,7 @@
 \usepackage{lmodern}
 \usepackage{tikz}
 \hypersetup{pdfinfo={
-    Title={Reçu de validation d’extrait électronique sécurisé},
+    Title={Reçu de validation de document électronique sécurisé},
     Author={République et canton de Genève},
     Subject={ {{ .JsonData}} }
 }
@@ -36,7 +36,7 @@
 \usepackage{array,booktabs,tabularx}
 \listfiles
 
-\title{Reçu de validation d’extrait électronique sécurisé}
+\title{Reçu de validation de document électronique sécurisé}
 \date{\today}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -47,41 +47,14 @@
 \begin{beamercolorbox}[center, wd=\textwidth]{postercolumn}
 \begin{minipage}[T]{0.95\textwidth}
 \parbox[t][\columnheight]{\textwidth}{%
-\begin{block}{Horodatage et signature d'extraits électroniques sécurisés}
-L'Etat de Genève expérimente la technologie Blockchain afin d'horodater et de signer les extraits numériques. C'est la première fois en Suisse que cette technologie prometteuse est utilisée dans ce contexte, raison pour laquelle la Confédération soutient ce projet dans le cadre des \href{https://www.egovernment.ch/fr/umsetzung/innovationen/innovations-20172018/}{projets d'innovation 2017/2018 d'E-Government Suisse}.
-\\
-\\
-Durant cette phase pilote, les extraits n'ont pas de validité juridique. L'objectif est de s'inscrire dans le cadre de la mise en œuvre de \href{https://www.ejpd.admin.ch/ejpd/fr/home/aktuell/news/2016/2016-09-07.html}{l'ordonnance sur l'établissement d'actes authentiques électroniques et les légalisations électroniques (OAAE)}.
-\\
-\\
-Cette technologie permet dorénavant à l'Etat de Genève d'horodater et de signer les extraits électroniques. Il est dès lors possible pour n'importe qui de vérifier qu'un extrait électronique a bien été délivré par l'Etat de Genève grâce à un service de validation en ligne: \href{https://blockchain.ge-lab.ch/validation/}{https://blockchain.ge-lab.ch/validation/}.
-\\
-\\
-Vous retrouverez toutes les informations sur cette expérimentation sur ce lien : \href{https://demain.ge-lab.ch/dossier/geneve-numerique/Blockchain/}{https://demain.ge-lab.ch/dossier/geneve-numerique/Blockchain/}.
-\end{block}
-\medskip
-\begin{block}{Comment vérifier qu'un extrait numérique PDF est bien délivré par l'Etat de Genève ?}
+\begin{block}{Comment vérifier qu'un document numérique PDF est bien délivré par l'Etat de Genève ?}
 \begin{enumerate}
-\item Vous pouvez téléverser l'extrait numérique PDF et le reçu PDF (formule de clôture) simultanément sur le service de validation de l'Etat de Genève : \href{https://blockchain.ge-lab.ch/validation/}{https://blockchain.ge-lab.ch/validation/}.
-\item Si l'extrait est bien celui que l'Etat de Genève a délivré, un message en vert vous l'indique.
-\item Si ce n'est pas le cas, une alerte en rouge vous informe que l'extrait n'est pas valable.
+\item Vous pouvez téléverser le document numérique PDF et le reçu PDF (formule de clôture) simultanément sur le service de validation de l'Etat de Genève : \href{https://blockchain.ge.ch}{https://blockchain.ge.ch}.
+\item Si le document est bien celui que l'Etat de Genève a délivré, un message en vert vous l'indique.
+\item Si ce n'est pas le cas, une alerte en rouge vous informe que le document n'est pas valable.
 \end{enumerate}
 \end{block}
-}
-\end{minipage}
-\end{beamercolorbox}
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}
-\begin{columns}
-\begin{column}{0.95\textwidth}
-\begin{beamercolorbox}[center, wd=\textwidth]{postercolumn}
-\begin{minipage}[T]{0.95\textwidth}
-    \hfill
-\parbox[t][\columnheight]{\textwidth}{%
-
+\medskip
 \begin{block}{Horodatage}
 \begin{description}
 \item [Date d'impression] :\linebreak
@@ -90,13 +63,13 @@ Vous retrouverez toutes les informations sur cette expérimentation sur ce lien 
 \item [Identifiant de la transaction Ethereum] :\linebreak
 \href{https://etherscan.io/tx/0x{{ .SourceID }} }{ {{.SourceID }} }
 {{ end }}
-\item[Adresse Ethereum du Registre du commerce] :\linebreak
+\item[Adresse Ethereum de l'Etat de Genève] :\linebreak
 {{ .Address }}
 \item[Racine de Merkle] :\linebreak
 {{ .MerkleRoot }}
 \item[Fonction de hachage] : \linebreak
 SHA3-256
-\item[Empreinte numérique de l'extrait] :\linebreak
+\item[Empreinte numérique du document] :\linebreak
 {{ .TargetHash }}
 \item[Preuve de Merkle] :
 \end{description}
