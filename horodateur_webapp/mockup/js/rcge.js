@@ -5,6 +5,7 @@ angular.module('rc', ['ngAnimate', 'ngSanitize', 'ui.bootstrap'])
         $scope.numLimit = 20;
         $scope.numPerPage = 10;
         $scope.maxSize = 5;
+        $scope.informationUrl = informationUrl;
 
         $scope.extractListFiltered = {};
         $scope.extractList = {};
