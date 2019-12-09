@@ -1,44 +1,54 @@
 version: '2'
 services:
   rcgech:
-    image: blockchainpartnerhub/geneva_horodateur_rcgech:1.0.1
+    image: registry.hortis.ch:8119/geneva_horodateur_rcgech:1.1.0
     environment:
-      - WS_URI=https://rinkeby.infura.io/v3/afeacc980c634655875d915ed65cb0e4
-      - PRIVATE_KEY=18030537DBDD38D0764947D40BED98FC4D2A21AF82765A7DE7B13D2E4076773C
-      - DB_DSN=host=postgres user=tsUhfmkMfY dbname=rcgehorodatage sslmode=disable password=lrwOuiz4gH
-      - LOCKED_ADDR=0x533a245f03a1a46cacb933a3beef752fd8ff45c3
+      - WS_URI=...
+      - PRIVATE_KEY=...
+      - DB_DSN=host=postgres user=... dbname=... sslmode=disable password=...
+      - LOCKED_ADDR=...
       - ERROR_THRESHOLD=0.1
       - WARNING_THRESHOLD=1
+    dns:
+      - 8.8.8.8
     links:
       - postgres
+    networks:
+      - database
+      - backend
 
   webapp:
-    image: blockchainpartnerhub/geneva_horodateur_webapp:1.0.3
-    ports:
-      - "0.0.0.0:8001:8080"
+    image: registry.hortis.ch:8119/geneva_horodateur_webapp:1.1.0
     environment:
-      - KEY_NAME=myservice # The .cert and .key must have the same name
-      - IDP_METADATA=http://ec2-18-184-234-216.eu-central-1.compute.amazonaws.com/ssorec.geneveid.ch_dgsi_blockchain.xml #Public URL where IdP can be found
-      - SP_URL=http://ec2-18-184-234-216.eu-central-1.compute.amazonaws.com:8001 # URL of the service provider
+      - KEY_NAME=saml # The .cert and .key must have the same name
+      - IDP_METADATA=... #Public URL where IdP can be found
+      - SP_URL=https://local.etat-ge.ch/blockstamp-horodateur # URL of the service provider
       - API_HOST=rcgech:8090 # API host, is equal to the <api container name>:<port>
-      - MAIN_URI=ctihorodateur # URI used as a prefix in the webapp
-      - VIRTUAL_HOST=example.com
+      - MAIN_URI=blockstamp-horodateur # URI used as a prefix in the webapp
+      - VIRTUAL_HOST=local.etat-ge.ch
+      - HTTPS_METHOD=noredirect
       - CSRF_TIME_LIMIT=360
     working_dir: /app
     command: /app/webapp
+    dns:
+      - 8.8.8.8
     volumes:
-      - "./myservice.cert:/app/myservice.cert"
-      - "./myservice.key:/app/myservice.key"
+      - ./SwissSignGoldCA-G2.crt:/etc/ssl/certs/SwissSignGoldCA-G2.crt:ro
+      - "./local.etat-ge.ch.cer:/app/saml.cert:ro"
+      - "./local.etat-ge.ch.key:/app/saml.key:ro"
+    networks:
+      - frontend
+      - backend
 
   postgres:
     image: postgres:9.5
     user: postgres
     environment:
-      - POSTGRES_USER=tsUhfmkMfY
-      - POSTGRES_PASSWORD=lrwOuiz4gH
-      - POSTGRES_DB=rcgehorodatage
-
-  # SSL Let's Encrypt config
+      - POSTGRES_USER=...
+      - POSTGRES_PASSWORD=...
+      - POSTGRES_DB=...
+    networks:
+      - database
 
   nginx-proxy:
     image: blockchainpartnerhub/geneva_nginx_proxy:1.0
@@ -47,11 +57,17 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - /path/to/certs/:/etc/nginx/certs:ro # Edit path to the right certs folder, name should be example.com.crt and example.com.key
+      - "./local.etat-ge.ch.cer:/etc/nginx/certs/local.etat-ge.ch.crt:ro" # Edit path to the right certs folder, name should be example.com.crt and example.com.key
+      - "./local.etat-ge.ch.key:/etc/nginx/certs/local.etat-ge.ch.key:ro" # Edit path to the right certs folder, name should be example.com.crt and example.com.key
       - /etc/nginx/vhost.d
       - /usr/share/nginx/html
+    networks:
+      - frontend
 
-
+networks:
+  frontend:
+  backend:
+  database:
 
 # Add these env vars to services that need to be reached from the Internet
 # VIRTUAL_HOST=example.com ; LETSENCRYPT_HOST=example.com ; LETSENCRYPT_EMAIL= foo@example.com
