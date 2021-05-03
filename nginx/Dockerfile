@@ -36,7 +36,7 @@ RUN CONFARGS=$(nginx -V 2>&1 | sed -n -e 's/^.*arguments: //p') \
   ./configure --with-compat $CONFARGS --add-dynamic-module=$MOREHEADERSDIR && \
   make && make install
 
-FROM jwilder/nginx-proxy:alpine
+FROM jwilder/nginx-proxy:latest
 # Extract the dynamic module from the builder image
 COPY --from=builder /usr/local/nginx/modules/ngx_http_headers_more_filter_module.so /usr/local/nginx/modules/ngx_http_headers_more_filter_module.so
 COPY nginx-prod.conf /etc/nginx/nginx.conf
