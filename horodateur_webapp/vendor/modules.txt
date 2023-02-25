@@ -1,23 +1,38 @@
 # github.com/beevik/etree v1.1.0
+## explicit
 github.com/beevik/etree
 # github.com/crewjam/saml v0.0.0-20180831135026-ebc5f787b786
-github.com/crewjam/saml/samlsp
+## explicit
 github.com/crewjam/saml
 github.com/crewjam/saml/logger
+github.com/crewjam/saml/samlsp
 github.com/crewjam/saml/xmlenc
 # github.com/dgrijalva/jwt-go v3.2.0+incompatible
+## explicit
 github.com/dgrijalva/jwt-go
 # github.com/gorilla/csrf v1.6.1
+## explicit
 github.com/gorilla/csrf
 # github.com/gorilla/securecookie v1.1.1
+## explicit
 github.com/gorilla/securecookie
 # github.com/jonboulle/clockwork v0.1.0
+## explicit
 github.com/jonboulle/clockwork
+# github.com/kr/pretty v0.1.0
+## explicit
 # github.com/pkg/errors v0.8.0
+## explicit
 github.com/pkg/errors
 # github.com/russellhaering/goxmldsig v0.0.0-20180430223755-7acd5e4a6ef7
+## explicit
 github.com/russellhaering/goxmldsig
 github.com/russellhaering/goxmldsig/etreeutils
 github.com/russellhaering/goxmldsig/types
-# golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c
+# github.com/stretchr/testify v1.4.0
+## explicit
+# golang.org/x/crypto v0.1.0
+## explicit; go 1.17
 golang.org/x/crypto/ripemd160
+# gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15
+## explicit
