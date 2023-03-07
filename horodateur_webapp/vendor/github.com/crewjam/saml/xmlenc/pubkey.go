@@ -29,7 +29,7 @@ func (e RSA) Algorithm() string {
 
 // Encrypt implements encrypter. certificate must be a []byte containing the ASN.1 bytes
 // of certificate containing an RSA public key.
-func (e RSA) Encrypt(certificate interface{}, plaintext []byte) (*etree.Element, error) {
+func (e RSA) Encrypt(certificate interface{}, plaintext []byte, nonce []byte) (*etree.Element, error) {
 	cert, ok := certificate.(*x509.Certificate)
 	if !ok {
 		return nil, ErrIncorrectKeyType("*x.509 certificate")
@@ -83,18 +83,18 @@ func (e RSA) Encrypt(certificate interface{}, plaintext []byte) (*etree.Element,
 	cd := encryptedKey.CreateElement("xenc:CipherData")
 	cd.CreateAttr("xmlns:xenc", "http://www.w3.org/2001/04/xmlenc#")
 	cd.CreateElement("xenc:CipherValue").SetText(base64.StdEncoding.EncodeToString(buf))
-	encryptedDataEl, err := e.BlockCipher.Encrypt(key, plaintext)
+	encryptedDataEl, err := e.BlockCipher.Encrypt(key, plaintext, nonce)
 	if err != nil {
 		return nil, err
 	}
-	encryptedDataEl.InsertChild(encryptedDataEl.FindElement("./CipherData"), keyInfoEl)
+	encryptedDataEl.InsertChildAt(encryptedDataEl.FindElement("./CipherData").Index(), keyInfoEl)
 
 	return encryptedDataEl, nil
 }
 
 // Decrypt implements Decryptor. `key` must be an *rsa.PrivateKey.
 func (e RSA) Decrypt(key interface{}, ciphertextEl *etree.Element) ([]byte, error) {
-	rsaKey, err := validateRSAKey(key, ciphertextEl)
+	rsaKey, err := validateRSAKeyIfPresent(key, ciphertextEl)
 	if err != nil {
 		return nil, err
 	}
@@ -107,14 +107,15 @@ func (e RSA) Decrypt(key interface{}, ciphertextEl *etree.Element) ([]byte, erro
 	{
 		digestMethodEl := ciphertextEl.FindElement("./EncryptionMethod/DigestMethod")
 		if digestMethodEl == nil {
-			return nil, fmt.Errorf("cannot find required DigestMethod element")
+			e.DigestMethod = SHA1
+		} else {
+			hashAlgorithmStr := digestMethodEl.SelectAttrValue("Algorithm", "")
+			digestMethod, ok := digestMethods[hashAlgorithmStr]
+			if !ok {
+				return nil, ErrAlgorithmNotImplemented(hashAlgorithmStr)
+			}
+			e.DigestMethod = digestMethod
 		}
-		hashAlgorithmStr := digestMethodEl.SelectAttrValue("Algorithm", "")
-		digestMethod, ok := digestMethods[hashAlgorithmStr]
-		if !ok {
-			return nil, ErrAlgorithmNotImplemented(hashAlgorithmStr)
-		}
-		e.DigestMethod = digestMethod
 	}
 
 	return e.keyDecrypter(e, rsaKey, ciphertext)

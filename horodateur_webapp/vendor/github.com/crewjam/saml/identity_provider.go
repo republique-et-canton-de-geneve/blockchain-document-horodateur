@@ -20,9 +20,11 @@ import (
 	"time"
 
 	"github.com/beevik/etree"
+	xrv "github.com/mattermost/xml-roundtrip-validator"
+	dsig "github.com/russellhaering/goxmldsig"
+
 	"github.com/crewjam/saml/logger"
 	"github.com/crewjam/saml/xmlenc"
-	dsig "github.com/russellhaering/goxmldsig"
 )
 
 // Session represents a user session. It is returned by the
@@ -34,13 +36,16 @@ type Session struct {
 	ExpireTime time.Time
 	Index      string
 
-	NameID         string
-	Groups         []string
-	UserName       string
-	UserEmail      string
-	UserCommonName string
-	UserSurname    string
-	UserGivenName  string
+	NameID                string
+	Groups                []string
+	UserName              string
+	UserEmail             string
+	UserCommonName        string
+	UserSurname           string
+	UserGivenName         string
+	UserScopedAffiliation string
+
+	CustomAttributes []Attribute
 }
 
 // SessionProvider is an interface used by IdentityProvider to determine the
@@ -99,18 +104,26 @@ type IdentityProvider struct {
 	SessionProvider         SessionProvider
 	AssertionMaker          AssertionMaker
 	SignatureMethod         string
+	ValidDuration           *time.Duration
 }
 
 // Metadata returns the metadata structure for this identity provider.
 func (idp *IdentityProvider) Metadata() *EntityDescriptor {
 	certStr := base64.StdEncoding.EncodeToString(idp.Certificate.Raw)
 
+	var validDuration time.Duration
+	if idp.ValidDuration != nil {
+		validDuration = *idp.ValidDuration
+	} else {
+		validDuration = DefaultValidDuration
+	}
+
 	ed := &EntityDescriptor{
 		EntityID:      idp.MetadataURL.String(),
-		ValidUntil:    TimeNow().Add(DefaultValidDuration),
-		CacheDuration: DefaultValidDuration,
+		ValidUntil:    TimeNow().Add(validDuration),
+		CacheDuration: validDuration,
 		IDPSSODescriptors: []IDPSSODescriptor{
-			IDPSSODescriptor{
+			{
 				SSODescriptor: SSODescriptor{
 					RoleDescriptor: RoleDescriptor{
 						ProtocolSupportEnumeration: "urn:oasis:names:tc:SAML:2.0:protocol",
@@ -118,13 +131,21 @@ func (idp *IdentityProvider) Metadata() *EntityDescriptor {
 							{
 								Use: "signing",
 								KeyInfo: KeyInfo{
-									Certificate: certStr,
+									X509Data: X509Data{
+										X509Certificates: []X509Certificate{
+											{Data: certStr},
+										},
+									},
 								},
 							},
 							{
 								Use: "encryption",
 								KeyInfo: KeyInfo{
-									Certificate: certStr,
+									X509Data: X509Data{
+										X509Certificates: []X509Certificate{
+											{Data: certStr},
+										},
+									},
 								},
 								EncryptionMethods: []EncryptionMethod{
 									{Algorithm: "http://www.w3.org/2001/04/xmlenc#aes128-cbc"},
@@ -268,6 +289,14 @@ func (idp *IdentityProvider) ServeIDPInitiated(w http.ResponseWriter, r *http.Re
 	for _, spssoDescriptor := range req.ServiceProviderMetadata.SPSSODescriptors {
 		for _, endpoint := range spssoDescriptor.AssertionConsumerServices {
 			if endpoint.Binding == HTTPPostBinding {
+				// explicitly copy loop iterator variables
+				//
+				// c.f. https://github.com/golang/go/wiki/CommonMistakes#using-reference-to-loop-iterator-variable
+				//
+				// (note that I'm pretty sure this isn't strictly necessary because we break out of the loop immediately,
+				// but it certainly doesn't hurt anything and may prevent bugs in the future.)
+				endpoint, spssoDescriptor := endpoint, spssoDescriptor
+
 				req.ACSEndpoint = &endpoint
 				req.SPSSODescriptor = &spssoDescriptor
 				break
@@ -349,6 +378,7 @@ func NewIdpAuthnRequest(idp *IdentityProvider, r *http.Request) (*IdpAuthnReques
 	default:
 		return nil, fmt.Errorf("method not allowed")
 	}
+
 	return req, nil
 }
 
@@ -356,6 +386,10 @@ func NewIdpAuthnRequest(idp *IdentityProvider, r *http.Request) (*IdpAuthnReques
 // the AuthnRequest and Metadata properties. Returns a non-nil error if the
 // request is not valid.
 func (req *IdpAuthnRequest) Validate() error {
+	if err := xrv.Validate(bytes.NewReader(req.RequestBuffer)); err != nil {
+		return err
+	}
+
 	if err := xml.Unmarshal(req.RequestBuffer, &req.Request); err != nil {
 		return err
 	}
@@ -370,7 +404,7 @@ func (req *IdpAuthnRequest) Validate() error {
 	// For now we do the safe thing and fail in the case where we think
 	// requests might be signed.
 	if idpSsoDescriptor.WantAuthnRequestsSigned != nil && *idpSsoDescriptor.WantAuthnRequestsSigned {
-		return fmt.Errorf("Authn request signature checking is not currently supported")
+		return fmt.Errorf("authn request signature checking is not currently supported")
 	}
 
 	// In http://docs.oasis-open.org/security/saml/v2.0/saml-bindings-2.0-os.pdf §3.4.5.2
@@ -423,6 +457,14 @@ func (req *IdpAuthnRequest) getACSEndpoint() error {
 		for _, spssoDescriptor := range req.ServiceProviderMetadata.SPSSODescriptors {
 			for _, spAssertionConsumerService := range spssoDescriptor.AssertionConsumerServices {
 				if strconv.Itoa(spAssertionConsumerService.Index) == req.Request.AssertionConsumerServiceIndex {
+					// explicitly copy loop iterator variables
+					//
+					// c.f. https://github.com/golang/go/wiki/CommonMistakes#using-reference-to-loop-iterator-variable
+					//
+					// (note that I'm pretty sure this isn't strictly necessary because we break out of the loop immediately,
+					// but it certainly doesn't hurt anything and may prevent bugs in the future.)
+					spssoDescriptor, spAssertionConsumerService := spssoDescriptor, spAssertionConsumerService
+
 					req.SPSSODescriptor = &spssoDescriptor
 					req.ACSEndpoint = &spAssertionConsumerService
 					return nil
@@ -435,6 +477,14 @@ func (req *IdpAuthnRequest) getACSEndpoint() error {
 		for _, spssoDescriptor := range req.ServiceProviderMetadata.SPSSODescriptors {
 			for _, spAssertionConsumerService := range spssoDescriptor.AssertionConsumerServices {
 				if spAssertionConsumerService.Location == req.Request.AssertionConsumerServiceURL {
+					// explicitly copy loop iterator variables
+					//
+					// c.f. https://github.com/golang/go/wiki/CommonMistakes#using-reference-to-loop-iterator-variable
+					//
+					// (note that I'm pretty sure this isn't strictly necessary because we break out of the loop immediately,
+					// but it certainly doesn't hurt anything and may prevent bugs in the future.)
+					spssoDescriptor, spAssertionConsumerService := spssoDescriptor, spAssertionConsumerService
+
 					req.SPSSODescriptor = &spssoDescriptor
 					req.ACSEndpoint = &spAssertionConsumerService
 					return nil
@@ -452,6 +502,14 @@ func (req *IdpAuthnRequest) getACSEndpoint() error {
 				if spAssertionConsumerService.IsDefault != nil && *spAssertionConsumerService.IsDefault {
 					switch spAssertionConsumerService.Binding {
 					case HTTPPostBinding, HTTPRedirectBinding:
+						// explicitly copy loop iterator variables
+						//
+						// c.f. https://github.com/golang/go/wiki/CommonMistakes#using-reference-to-loop-iterator-variable
+						//
+						// (note that I'm pretty sure this isn't strictly necessary because we break out of the loop immediately,
+						// but it certainly doesn't hurt anything and may prevent bugs in the future.)
+						spssoDescriptor, spAssertionConsumerService := spssoDescriptor, spAssertionConsumerService
+
 						req.SPSSODescriptor = &spssoDescriptor
 						req.ACSEndpoint = &spAssertionConsumerService
 						return nil
@@ -465,6 +523,14 @@ func (req *IdpAuthnRequest) getACSEndpoint() error {
 			for _, spAssertionConsumerService := range spssoDescriptor.AssertionConsumerServices {
 				switch spAssertionConsumerService.Binding {
 				case HTTPPostBinding, HTTPRedirectBinding:
+					// explicitly copy loop iterator variables
+					//
+					// c.f. https://github.com/golang/go/wiki/CommonMistakes#using-reference-to-loop-iterator-variable
+					//
+					// (note that I'm pretty sure this isn't strictly necessary because we break out of the loop immediately,
+					// but it certainly doesn't hurt anything and may prevent bugs in the future.)
+					spssoDescriptor, spAssertionConsumerService := spssoDescriptor, spAssertionConsumerService
+
 					req.SPSSODescriptor = &spssoDescriptor
 					req.ACSEndpoint = &spAssertionConsumerService
 					return nil
@@ -489,12 +555,28 @@ func (DefaultAssertionMaker) MakeAssertion(req *IdpAuthnRequest, session *Sessio
 	var attributeConsumingService *AttributeConsumingService
 	for _, acs := range req.SPSSODescriptor.AttributeConsumingServices {
 		if acs.IsDefault != nil && *acs.IsDefault {
+			// explicitly copy loop iterator variables
+			//
+			// c.f. https://github.com/golang/go/wiki/CommonMistakes#using-reference-to-loop-iterator-variable
+			//
+			// (note that I'm pretty sure this isn't strictly necessary because we break out of the loop immediately,
+			// but it certainly doesn't hurt anything and may prevent bugs in the future.)
+			acs := acs
+
 			attributeConsumingService = &acs
 			break
 		}
 	}
 	if attributeConsumingService == nil {
 		for _, acs := range req.SPSSODescriptor.AttributeConsumingServices {
+			// explicitly copy loop iterator variables
+			//
+			// c.f. https://github.com/golang/go/wiki/CommonMistakes#using-reference-to-loop-iterator-variable
+			//
+			// (note that I'm pretty sure this isn't strictly necessary because we break out of the loop immediately,
+			// but it certainly doesn't hurt anything and may prevent bugs in the future.)
+			acs := acs
+
 			attributeConsumingService = &acs
 			break
 		}
@@ -620,6 +702,22 @@ func (DefaultAssertionMaker) MakeAssertion(req *IdpAuthnRequest, session *Sessio
 		})
 	}
 
+	if session.UserScopedAffiliation != "" {
+		attributes = append(attributes, Attribute{
+			FriendlyName: "uid",
+			Name:         "urn:oid:1.3.6.1.4.1.5923.1.1.1.9",
+			NameFormat:   "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			Values: []AttributeValue{{
+				Type:  "xs:string",
+				Value: session.UserScopedAffiliation,
+			}},
+		})
+	}
+
+	for _, ca := range session.CustomAttributes {
+		attributes = append(attributes, ca)
+	}
+
 	if len(session.Groups) != 0 {
 		groupMemberAttributeValues := []AttributeValue{}
 		for _, group := range session.Groups {
@@ -661,7 +759,7 @@ func (DefaultAssertionMaker) MakeAssertion(req *IdpAuthnRequest, session *Sessio
 				Value:           session.NameID,
 			},
 			SubjectConfirmations: []SubjectConfirmation{
-				SubjectConfirmation{
+				{
 					Method: "urn:oasis:names:tc:SAML:2.0:cm:bearer",
 					SubjectConfirmationData: &SubjectConfirmationData{
 						Address:      req.HTTPRequest.RemoteAddr,
@@ -676,13 +774,13 @@ func (DefaultAssertionMaker) MakeAssertion(req *IdpAuthnRequest, session *Sessio
 			NotBefore:    notBefore,
 			NotOnOrAfter: notOnOrAfterAfter,
 			AudienceRestrictions: []AudienceRestriction{
-				AudienceRestriction{
+				{
 					Audience: Audience{Value: req.ServiceProviderMetadata.EntityID},
 				},
 			},
 		},
 		AuthnStatements: []AuthnStatement{
-			AuthnStatement{
+			{
 				AuthnInstant: session.CreateTime,
 				SessionIndex: session.Index,
 				SubjectLocality: &SubjectLocality{
@@ -696,7 +794,7 @@ func (DefaultAssertionMaker) MakeAssertion(req *IdpAuthnRequest, session *Sessio
 			},
 		},
 		AttributeStatements: []AttributeStatement{
-			AttributeStatement{
+			{
 				Attributes: attributes,
 			},
 		},
@@ -764,7 +862,7 @@ func (req *IdpAuthnRequest) MakeAssertionEl() error {
 	encryptor := xmlenc.OAEP()
 	encryptor.BlockCipher = xmlenc.AES128CBC
 	encryptor.DigestMethod = &xmlenc.SHA1
-	encryptedDataEl, err := encryptor.Encrypt(certBuf, signedAssertionBuf)
+	encryptedDataEl, err := encryptor.Encrypt(certBuf, signedAssertionBuf, nil)
 	if err != nil {
 		return err
 	}
@@ -837,7 +935,7 @@ func (req *IdpAuthnRequest) getSPEncryptionCert() (*x509.Certificate, error) {
 	certStr := ""
 	for _, keyDescriptor := range req.SPSSODescriptor.KeyDescriptors {
 		if keyDescriptor.Use == "encryption" {
-			certStr = keyDescriptor.KeyInfo.Certificate
+			certStr = keyDescriptor.KeyInfo.X509Data.X509Certificates[0].Data
 			break
 		}
 	}
@@ -846,8 +944,8 @@ func (req *IdpAuthnRequest) getSPEncryptionCert() (*x509.Certificate, error) {
 	// non-empty cert we find.
 	if certStr == "" {
 		for _, keyDescriptor := range req.SPSSODescriptor.KeyDescriptors {
-			if keyDescriptor.Use == "" && keyDescriptor.KeyInfo.Certificate != "" {
-				certStr = keyDescriptor.KeyInfo.Certificate
+			if keyDescriptor.Use == "" && len(keyDescriptor.KeyInfo.X509Data.X509Certificates) != 0 && keyDescriptor.KeyInfo.X509Data.X509Certificates[0].Data != "" {
+				certStr = keyDescriptor.KeyInfo.X509Data.X509Certificates[0].Data
 				break
 			}
 		}
