@@ -8,10 +8,16 @@ import (
 )
 
 // HTTPPostBinding is the official URN for the HTTP-POST binding (transport)
-var HTTPPostBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+const HTTPPostBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
 
 // HTTPRedirectBinding is the official URN for the HTTP-Redirect binding (transport)
-var HTTPRedirectBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+const HTTPRedirectBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+
+// HTTPArtifactBinding is the official URN for the HTTP-Artifact binding (transport)
+const HTTPArtifactBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact"
+
+// SOAPBinding is the official URN for the SOAP binding (transport)
+const SOAPBinding = "urn:oasis:names:tc:SAML:2.0:bindings:SOAP"
 
 // EntitiesDescriptor represents the SAML object of the same name.
 //
@@ -104,7 +110,7 @@ type Organization struct {
 //
 // See http://docs.oasis-open.org/security/saml/v2.0/saml-metadata-2.0-os.pdf §2.2.4
 type LocalizedName struct {
-	Lang  string `xml:"xml lang,attr"`
+	Lang  string `xml:"http://www.w3.org/XML/1998/namespace lang,attr"`
 	Value string `xml:",chardata"`
 }
 
@@ -112,7 +118,7 @@ type LocalizedName struct {
 //
 // See http://docs.oasis-open.org/security/saml/v2.0/saml-metadata-2.0-os.pdf §2.2.5
 type LocalizedURI struct {
-	Lang  string `xml:"xml lang,attr"`
+	Lang  string `xml:"http://www.w3.org/XML/1998/namespace lang,attr"`
 	Value string `xml:",chardata"`
 }
 
@@ -133,7 +139,7 @@ type ContactPerson struct {
 // See http://docs.oasis-open.org/security/saml/v2.0/saml-metadata-2.0-os.pdf §2.4.1
 type RoleDescriptor struct {
 	ID                         string        `xml:",attr,omitempty"`
-	ValidUntil                 time.Time     `xml:"validUntil,attr,omitempty"`
+	ValidUntil                 *time.Time    `xml:"validUntil,attr,omitempty"`
 	CacheDuration              time.Duration `xml:"cacheDuration,attr,omitempty"`
 	ProtocolSupportEnumeration string        `xml:"protocolSupportEnumeration,attr"`
 	ErrorURL                   string        `xml:"errorURL,attr,omitempty"`
@@ -156,11 +162,21 @@ type EncryptionMethod struct {
 }
 
 // KeyInfo represents the XMLSEC object of the same name
-//
-// TODO(ross): revisit xmldsig and make this type more complete
 type KeyInfo struct {
-	XMLName     xml.Name `xml:"http://www.w3.org/2000/09/xmldsig# KeyInfo"`
-	Certificate string   `xml:"X509Data>X509Certificate"`
+	XMLName  xml.Name `xml:"http://www.w3.org/2000/09/xmldsig# KeyInfo"`
+	X509Data X509Data `xml:"X509Data"`
+}
+
+// X509Data represents the XMLSEC object of the same name
+type X509Data struct {
+	XMLName          xml.Name          `xml:"http://www.w3.org/2000/09/xmldsig# X509Data"`
+	X509Certificates []X509Certificate `xml:"X509Certificate"`
+}
+
+// X509Certificate represents the XMLSEC object of the same name
+type X509Certificate struct {
+	XMLName xml.Name `xml:"http://www.w3.org/2000/09/xmldsig# X509Certificate"`
+	Data    string   `xml:",chardata"`
 }
 
 // Endpoint represents the SAML EndpointType object.
@@ -203,6 +219,7 @@ type IDPSSODescriptor struct {
 	WantAuthnRequestsSigned *bool `xml:",attr"`
 
 	SingleSignOnServices       []Endpoint  `xml:"SingleSignOnService"`
+	ArtifactResolutionServices []Endpoint  `xml:"ArtifactResolutionService"`
 	NameIDMappingServices      []Endpoint  `xml:"NameIDMappingService"`
 	AssertionIDRequestServices []Endpoint  `xml:"AssertionIDRequestService"`
 	AttributeProfiles          []string    `xml:"AttributeProfile"`

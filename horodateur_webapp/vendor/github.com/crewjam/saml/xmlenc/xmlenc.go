@@ -6,20 +6,19 @@ package xmlenc
 import (
 	"crypto/rand"
 	"hash"
-	"io"
 
 	"github.com/beevik/etree"
 )
 
 // RandReader is a thunk that allows test to replace the source of randomness used by
 // this package. By default it is Reader from crypto/rand.
-var RandReader io.Reader = rand.Reader
+var RandReader = rand.Reader
 
 // Encrypter is an interface that encrypts things. Given a plaintext it returns an
 // XML EncryptedData or EncryptedKey element. The required type of `key` varies
 // depending on the implementation.
 type Encrypter interface {
-	Encrypt(key interface{}, plaintext []byte) (*etree.Element, error)
+	Encrypt(key interface{}, plaintext []byte, nonce []byte) (*etree.Element, error)
 }
 
 // Decrypter is an interface that decrypts things. The Decrypt() method returns the
